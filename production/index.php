@@ -413,15 +413,6 @@
         <!-- /footer content -->
       </div>
     </div>
-
-
-
-
-
-
-
-
- 
   <script>
   
 
@@ -440,33 +431,30 @@ $('#imgfile').bind('change', function() {
     }
 });
 
+//SAVE form
+$('#uploadfile2').on("submit",function (e) {
+    e.preventDefault();  
+
+     $.ajax({  
+        contentType: false,       
+        cache: false,             
+        processData:false,        
+        type: 'POST',
+        url: 'proc/upload_profile_photo_proc.php', 
+        data: new FormData(this),
+        success: function(response) {
+             //alert(response);
+             if (response.indexOf("**success**") > -1){
+                alert('Pofile Picture successfully updated.');
+                window.location="index.php";
+             }else if (response.indexOf("Notice") > -1){
+                alert("Upload failed: An error has occured while uploading data. Please contact your system developer. ");
+             }
+        }
+    });       
+});
 
 
-
-    //SAVE form
-    $('#uploadfile2').on("submit",function (e) {
-        e.preventDefault();  
-
-         $.ajax({  
-            contentType: false,       
-            cache: false,             
-            processData:false,        
-            type: 'POST',
-            url: 'proc/upload_profile_photo_proc.php', 
-            data: new FormData(this),
-            success: function(response) {
-                 //alert(response);
-                 if (response.indexOf("**success**") > -1){
-                    alert('Pofile Picture successfully updated.');
-                    window.location="index.php";
-                 }else if (response.indexOf("Notice") > -1){
-                    alert("Upload failed: An error has occured while uploading data. Please contact your system developer. ");
-                 }
-            }
-        });       
-
-
-    });
 });
 
 

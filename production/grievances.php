@@ -398,18 +398,38 @@
                     var arr = response.split('|');
                     /*
                     RESULTS:
-                    arr[0] = subject
-                    arr[1] = details
-                    arr[2] = date_conducted
-                    arr[3] = yds_child_count
-                    arr[4] = program_id
-                    arr[5] = HOUSEHOLD_ID
+                        r[0] = `id`
+                        r[1] = `FIRSTNAME`
+                        r[2] = `MIDDLENAME`
+                        r[3] = `LASTNAME`
+                        r[4] = `EXT`
+                        r[5] = `PSGC`
+                        r[6] = `REGION`
+                        r[7] = `PROVINCE`
+                        r[8] = `MUNICIPALITY`
+                        r[9] = `BARANGAY NAME`
+                        r[10] = `CONTACTNO`
+                        r[11] = `EMAIL`
+                        r[12] = `grs_type`
+                        r[13] = `DESCRIPTION`
+                        r[14] = `EOOB`
+                        r[15] = `DATE_REPORTED`
+                        r[16] = `source`
+                        r[17] = `status`
+                        r[18] = `DATE_SUBMITTED`
+                        r[19] = `DATE_RESOLVED`
+                        r[20] = `fullname`
+                        r[21] = `DATE_ENCODED`
+                        r[22] = `Remarks`
+
                     */
-                            *** im here
-                    $('#txtEdFirstName').val(arr[3]);
+                            //*** im here
+                    $('#txtEdFirstName').val(arr[1]);
                     $('#txtEdMiddleName').val(arr[2]);
-                    $('#txtEdLastName').val(arr[0]);
-                    $('#txtEdExt').val(inv_id);
+                    $('#txtEdLastName').val(arr[3]);
+                    $('#txtEdExt').val(arr[4]);
+
+
 
                 }
             });
@@ -577,7 +597,7 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-users"></i>
                                 </div>
-                                <input id="txtEdFirstName" name="txtEdFirstName" type="number" class="form-control" required="required" value="1">
+                                <input id="txtEdFirstName" name="txtEdFirstName" type="text" class="form-control" required="required" value="">
                             </div>
                         </div>
 
@@ -587,7 +607,7 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-users"></i>
                                 </div>
-                                <input id="txtEdMiddleName" name="txtEdMiddleName" type="number" class="form-control" required="required" value="1">
+                                <input id="txtEdMiddleName" name="txtEdMiddleName" type="text" class="form-control" required="required" value="">
                             </div>
                         </div>
 
@@ -597,7 +617,7 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-users"></i>
                                 </div>
-                                <input id="txtEdLastName" name="txtEdLastName" type="number" class="form-control" required="required" value="1">
+                                <input id="txtEdLastName" name="txtEdLastName" type="text" class="form-control" required="required" value="">
                             </div>
                         </div>
 
@@ -607,7 +627,27 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-users"></i>
                                 </div>
-                                <input id="txtEdExt" name="txtEdExt" type="number" class="form-control" required="required" value="1">
+                                <input id="txtEdExt" name="txtEdExt" type="text" class="form-control" required="required" value="">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="txtEdContactNo" class="control-label">Contact Number</label>
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-users"></i>
+                                </div>
+                                <input id="txtEdContactNo" name="txtEdContactNo" type="text" class="form-control" required="required" value="">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="txtEdEmail" class="control-label">Email</label>
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-users"></i>
+                                </div>
+                                <input id="txtEdEmail" name="txtEdEmail" type="email" class="form-control" required="required" value="">
                             </div>
                         </div>
 
