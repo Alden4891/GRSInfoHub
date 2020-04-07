@@ -36,8 +36,9 @@
                         <th>CTRLNo.</th>
                         <th>Description</th>
                         <th>Date Reported</th>
+                        <th>Duration</th>
                         <th>Source</th>
-                        <th>EOOB</th>
+                        <th>EODB</th>
                         <th>Status</th>
                         <th>Options</th>
 
@@ -58,6 +59,7 @@
                                 , `grievances`.`MIDDLENAME`
                                 , `grievances`.`LASTNAME`
                                 , `grievances`.`EXT`
+                                , `grievances`.`ADDRESS`
                                 , `lib_psgc`.`PSGC`
                                 , `lib_psgc`.`REGION`
                                 , `lib_psgc`.`PROVINCE`
@@ -67,13 +69,12 @@
                                 , `grievances`.`EMAIL`
                                 , `lib_grstype`.`grs_type`
                                 , `grievances`.`DESCRIPTION`
-                                , `grievances`.`EOOB`
+                                , `lib_eoob`.eoob AS 'EOOB'
                                 , `grievances`.`DATE_REPORTED`
                                 , `lib_grssource`.`source`
                                 , `lib_status`.`status`
                                 , `grievances`.`DATE_SUBMITTED`
                                 , `grievances`.`DATE_RESOLVED`
-                                , `users`.`fullname`
                                 , `grievances`.`DATE_ENCODED`
                                 , `grievances`.`Remarks`
                             FROM
@@ -84,10 +85,10 @@
                                     ON (`grievances`.`GRS_TYPE` = `lib_grstype`.`id`)
                                 INNER JOIN `db_grs`.`lib_grssource` 
                                     ON (`grievances`.`GRS_SOURCE` = `lib_grssource`.`id`)
+                                INNER JOIN `db_grs`.`lib_eoob` 
+                                    ON (`lib_eoob`.id = `grievances`.EOOB)
                                 INNER JOIN `db_grs`.`lib_status` 
-                                    ON (`lib_status`.`id` = `grievances`.`STATUS`)
-                                INNER JOIN `db_grs`.`users` 
-                                    ON (`grievances`.`ENCODED_BY` = `users`.`user_id`);
+                                    ON (`lib_status`.`id` = `grievances`.`STATUS`);
 
                              ") or die(mysqli_error());
                             while ($r=mysqli_fetch_array($res_intvlist,MYSQLI_ASSOC)) {
@@ -107,25 +108,47 @@
                                 $contactno=$r['CONTACTNO'];
                                 $email=$r['EMAIL'];
                                 $grs_type=$r['grs_type'];
-                                $description=substr($r['DESCRIPTION'], 0,300)."... <a href=\"#\">Read more</a>";
+                                $description=substr(Strip_tags($r['DESCRIPTION']), 0,300)."... <a href=\"#\">Read more</a>";
                                 $eoob=$r['EOOB'];
                                 $date_reported=$r['DATE_REPORTED'];
                                 $source=$r['source'];
                                 $status=$r['status'];
                                 $date_submitted=$r['DATE_SUBMITTED'];
                                 $date_resolved=$r['DATE_RESOLVED'];
-                                $fullname=$r['fullname'];
+                                //$fullname=$r['fullname'];
                                 $date_encoded=$r['DATE_ENCODED'];
                                 $remarks=$r['Remarks'];
 
 
                                 $btn_detail_class = "";
 
+
+                                //get duration
+                                $start_date = new DateTime($date_reported);
+                                $since_start = $start_date->diff(new DateTime());
+
+                                $lapse = "";
+                                if ($since_start->y > 0) {
+                                  $lapse = $since_start->y.' years ago';
+                                }else if ($since_start->m > 0){
+                                  $lapse = $since_start->m.' months ago';
+                                }else if ($since_start->d > 0){
+                                  $lapse = $since_start->d.' days ago';
+                                }else if ($since_start->h > 0){
+                                  $lapse = $since_start->h.' hours ago';
+                                }else if ($since_start->i > 0){
+                                  $lapse = $since_start->i.' minutes ago';
+                                } else {
+                                  $lapse = ' just now ';
+                                }
+
+
                                 echo "
                                     <tr class=\"\">
                                         <td class=\"even gradeC\"> $ctrlno</td>
                                         <td>$description</td>
                                         <td>$date_reported</td>
+                                        <td>$lapse</td>
                                         <td>$source</td>
                                         <td>$eoob</td>
                                         <td>$status</td>
@@ -151,56 +174,113 @@
 
 <script>
     //submit interv editor
-    $(document).on('click', "#btnSubmitIntv", function(e) {
+    $(document).on('click', "#btnSubmitGrievamce", function(e) {
         e.preventDefault();
         if (confirm('You are about to save the changes you made. Do you want to continue?')) {
 
-            var hidden_interv_id = $('#hidden_interv_id').val();
-            var hidden_hhid = $('#hidden_hhid').val().replace(/[\s\r\n]+$/, '');
             var cmbEdBarangay = $('#cmbEdBarangay').val();
-            var numYDS = $('#numYDS').val();
-            var dtDateConducted = $('#dtDateConducted').val();
-            var txtTitle = $('#txtTitle').val();
-            //var txtIntervDescription = $('#txtIntervDescription').val();
-            var txtIntervDescription = $('#editor-one').html();
+            var txtEdAddress = $('#txtEdAddress').html();
+            var txtEdFirstName = $('#txtEdFirstName').val();
+            var txtEdMiddleName = $('#txtEdMiddleName').val();
+            var txtEdLastName = $('#txtEdLastName').val();
+            var txtEdExt = $('#txtEdExt').val();
+            var txtEdContactNo = $('#txtEdContactNo').val();
+            var txtEdEmail = $('#txtEdEmail').val();
+
+            var cmbEdGRSType = $('#cmbEdGRSType').val();
+            var description = $('#editor-one').html();
+
+
+            var cmbEdEODB = $('#cmbEdEODB').val();
+            var dtDateReported = $('#dtDateReported').val();
+            var cmbEdSource = $('#cmbEdSource').val();
+
+            var cmbEdStatus = $('#cmbEdStatus').val();
+            var txtEdRemarks = $('#txtEdRemarks').val();
+            var date_encoded= $('#hid_date_encoded').val();
+            var encoded_by= $('#hid_encoded_by').val();
+            var date_resolved= $('#hid_date_resolved').val();
+            var date_submitted= $('#hid_date_submitted').val();
+
+            var ctrlno = $('#hid_ctrlno').val();
+            var uuid = $('#hid_uuid').val();
+
+
 
             var has_error = false;
-            if (cmbEdBarangay < 0) {
-                notification_show('The following fields are required! <br> <ul><li>Compoents</li><li>Classification</li><li>Program/Service</li></ul>');
-                // $('#cmbEdBarangay').closest('div').addClass('has-error');
-                // $('#cmbEdMunicipality').closest('div').addClass('has-error');
-                // $('#cmbEdProvince').closest('div').addClass('has-error');
+            if (cmbEdBarangay == null) {
+                notification_show('All field with askterisk(*) is required!');
                 has_error = true;
-            } else if (numYDS <= 0) {
-                notification_show('YDS field is required!');
+                return;
+            } else if (txtEdFirstName == '') {
+                notification_show('First Name is required!');
                 has_error = true;
-            } else if (txtTitle == "") {
-                notification_show('Title field is required!');
-                $('#txtTitle').closest('div').addClass('has-error');
+            } else if (txtEdLastName == "") {
+                notification_show('Last Name is required!');
                 has_error = true;
-            } else if (txtIntervDescription == "" > 0) {
-                notification_show('Intervention field is required!');
-                //$('#txtIntervDescription').closest('div').addClass('has-error');
+            } else if (txtEdContactNo == "") {
+                notification_show('Last Name is required!');
+                has_error = true;
+            } else if (cmbEdGRSType == null || cmbEdGRSType == -1) {
+                notification_show('Type of grievances is required!');
+                has_error = true;
+            } else if (description == "") {
+                notification_show('Grievance description field is required!');
+                has_error = true;
+            } else if (cmbEdEODB == null) {
+                notification_show('EODB is required!');
+                has_error = true;
+            } else if (dtDateReported == null) {
+                notification_show('Date Reported is required!');
+                has_error = true;
+            } else if (cmbEdSource == null) {
+                notification_show('Source of grievance is required!');
                 has_error = true;
             } else {
                 //save data
+                //INSERT INTO `db_grs`.`grievances`(`id`,`FIRSTNAME`,`MIDDLENAME`,`LASTNAME`,`EXT`,`PSGC`,`ADDRESS`,`CONTACTNO`,`EMAIL`,`GRS_TYPE`,`DESCRIPTION`,`EOOB`,`DATE_REPORTED`,`GRS_SOURCE`,`STATUS`,`DATE_SUBMITTED`,`DATE_RESOLVED`,`ENCODED_BY`,`DATE_ENCODED`,`Remarks`) VALUES ( NULL,'JOSE','P','RIZAL',NULL,'126306015','AAAAAAA','09468841123','asdas.gooogle.com','1','dasaadadasdasd','1','2020-04-07','1','1',NULL,NULL,'1','2020-04-07','okok!');
+
                 $.ajax({
                     type: 'POST',
-                    url: 'proc/intervention_save.php',
+                    url: 'proc/grievance_save.php',
                     data: {
-                        subject: txtTitle,
-                        details: txtIntervDescription,
-                        date_conducted: dtDateConducted,
-                        yds_child_count: numYDS,
-                        program_id: cmbEdBarangay,
-                        HOUSEHOLD_ID: hidden_hhid,
-                        interv_id: hidden_interv_id,
-                        user_id: "<?=$user_id?>"
+                        ctrlno:ctrlno,
+                        firstname:txtEdFirstName,
+                        middlename:txtEdMiddleName,
+                        lastname:txtEdLastName,
+                        ext:txtEdExt,
+                        psgc:cmbEdBarangay,
+                        address:txtEdAddress,
+                        contactno:txtEdContactNo,
+                        email:txtEdEmail,
+                        grs_type:cmbEdGRSType,
+                        description:description,
+                        eoob:cmbEdEODB,
+                        date_reported:dtDateReported,
+                        grs_source:cmbEdSource,
+                        status:cmbEdStatus,
+                        date_submitted:date_submitted,
+                        date_resolved:date_resolved,
+                        encoded_by:encoded_by,
+                        date_encoded:date_encoded,
+                        remarks:txtEdRemarks,
+                        uuid:uuid,
+                        user_fullname: "<?=$user_fullname?>",
+
                     },
                     success: function(response) {
-                        //console.log(response);
-                        $('#intev_tablebody_container').html(response);
-                        $('#interv_list_editor_modal').modal('hide');
+                        console.log(response);
+                         if (response.indexOf("**success**") > -1){   
+                                notification_show("Saved",1);
+                         }else if (response.indexOf("**no-changes**") > -1) {
+                                 notification_show("No changes made!",0);
+                         }
+
+                       
+
+
+
+                        //$('#interv_list_editor_modal').modal('hide');
 
                     }
                 });
@@ -211,90 +291,14 @@
 
     });
 
-    //* show modal on btnIntervlistShowModal clicked
-    $(document).on('click', "#btnIntervlistShowModal", function(e) {
+    //delete grievance
+    $(document).on('click', '#btn_delete_grievance', function(e) {
         e.preventDefault();
-        var ctrlno = $(this).attr('ctrlno');
-
-        //load modal list;
-        $('#interv_list_editor_modal_label').html('CTRL No.' + ctrlno);
-        //get header data
-        $.ajax({
-            type: 'POST',
-            url: 'proc/getGrievanceInfo.php',
-            data: {
-                ctrlno: ctrlno
-            },
-            success: function(response) {
-
-                var r = response.split('|');
-                /*
-                    r[0] = id
-                    r[1] = firstname
-                    r[2] = middlename
-                    r[3] = lastname
-                    r[4] = ext
-                    r[5] = region
-                    r[6] = province
-                    r[7] = municipality
-                    r[8] = barangayname
-                    r[9] = contactno
-                    r[10] = email
-                    r[11] = grs_type
-                    r[12] = description
-                    r[13] = eoob
-                    r[14] = date_reported
-                    r[15] = source
-                    r[16] = status
-                    r[17] = date_submitted
-                    r[18] = date_resolved
-                    r[19] = fullname
-                    r[20] = date_encoded
-                    r[21] = remarks
-
-                */
-
-
-                return;
-
-                $('#ih_grantee').html(r[1]);
-                $('#ih_sex').html(r[2]);
-                $('#ih_birthdate').html(r[3]);
-                $('#ih_age').html(r[4]);
-                $('#ih_region').html(r[5]);
-                $('#ih_province').html(r[6]);
-                $('#ih_municipality').html(r[7]);
-                $('#ih_barangay').html(r[8]);
-                $('#ih_hhstatus').html(r[9]);
-                $('#ih_ipaffil').html(r[10]);
-                $('#ih_setgroup').html(r[11]);
-
-            }
-
-        });
-
-        //get table data
-        $.ajax({
-            type: 'POST',
-            url: 'proc/get_intervention_list.php',
-            data: {
-                ctrlno: ctrlno
-            },
-            success: function(response) {
-                $('#intev_tablebody_container').html(response);
-
-            }
-        });
-    });
-
-    //delete intervention
-    $(document).on('click', '#btn_delete_intervention', function(e) {
-        e.preventDefault();
-        if (confirm('You are about to delete this intervention. Do you want to continue?')) {
+        if (confirm('You are about to delete this grievance. Do you want to continue?')) {
             var tr = $(this).closest('tr');
             $.ajax({
                 type: 'POST',
-                url: 'proc/intervention_delete.php',
+                url: 'proc/grievance_delete.php',
                 data: {
                     interv_id: $(this).attr('interv_id')
                 },
@@ -303,7 +307,6 @@
                     if (response.indexOf("**success**") > -1) {
 
                         tr.fadeOut(500, function() {
-                            alert(response);
                             parent.remove();
                         });
                     }
@@ -314,12 +317,25 @@
         }
     });
 
-    function  notification_show(msg){
-        $('#editors-notification').removeAttr('hidden');
-        $('#editors-notification-container').html(msg);
+    function  notification_show(msg,mode=0){
+
+        var type = "alert-warning";
+        if (mode==0){
+            $('#editors-notification').removeClass('alert-success');
+            $('#editors-notification').addClass('alert-warning');
+            $('#editors-notification').removeAttr('hidden');
+            $('#editors-notification-container').html(msg);
+        }else if (mode == 1){
+            $('#editors-notification').removeClass('alert-warning');
+            $('#editors-notification').addClass('alert-success');
+            $('#editors-notification').removeAttr('hidden');
+            $('#editors-notification-container').html(msg);
+        }
+
+
     }
 
-    //open intervention editor
+    //open grievance editor
     $(document).on('click', "#btn_interv_list_editor_open", function(e) {
         e.preventDefault();
 
@@ -339,7 +355,6 @@
             var date_conducted = $(this).closest('tr').find('td:eq(4)').text();
 
             $('#interv_list_editor_modal_label').html('CTRL No.' + ctrlno );
-           
             $.ajax({
                 type: 'GET',
                 url: './proc/getComboData.php',
@@ -355,6 +370,7 @@
                     $('#cmbEdProvince').html(response);
                 }
             });
+
             $.ajax({
                 type: 'GET',
                 url: './proc/getComboData.php',
@@ -366,10 +382,11 @@
                     selected: psgc_muni,
                 },
                 success: function(response) {
-                    console.log(response);
+                    //console.log(response);
                     $('#cmbEdMunicipality').html(response);
                 }
             });
+
             $.ajax({
                 type: 'GET',
                 url: './proc/getComboData.php',
@@ -387,7 +404,7 @@
             });
 
 
-            //get intervention details
+            //get grievance details
             $.ajax({
                 type: 'GET',
                 url: './proc/getGrievanceInfo.php',
@@ -395,6 +412,8 @@
                     ctrlno: ctrlno,
                 },
                 success: function(response) {
+
+
                     var arr = response.split('|');
                     /*
                     RESULTS:
@@ -418,63 +437,235 @@
                         r[17] = `status`
                         r[18] = `DATE_SUBMITTED`
                         r[19] = `DATE_RESOLVED`
-                        r[20] = `fullname`
+                        r[20] = `ENCODED_BY`
                         r[21] = `DATE_ENCODED`
                         r[22] = `Remarks`
+                        r[23] = `address`
+
+                             24  grs_type_id
+                             25  EODB_ID
+                             26  source_id
+                             27  status_id
+                             28  uuid
 
                     */
-                            //*** im here
+
+                    //COMPLIANT INFORMATION
                     $('#txtEdFirstName').val(arr[1]);
                     $('#txtEdMiddleName').val(arr[2]);
                     $('#txtEdLastName').val(arr[3]);
                     $('#txtEdExt').val(arr[4]);
+                    $('#txtEdAddress').html(arr[23]);
+                    $('#txtEdContactNo').val(arr[10]);
+                    $('#txtEdEmail').val(arr[11]);
+                    
+                    $('#hid_ctrlno').val(ctrlno);
+                    $('#hid_uuid').val(arr[28]);
+                    $('#hid_date_submitted').val(arr[18]);
+                    $('#hid_date_resolved').val(arr[19]);
+                    $('#hid_date_encoded').val(arr[21]);
+                    $('#hid_encoded_by').val(arr[20]);
 
+
+                    //GRIEVANCE INFORMATION
+                    
+                    $.ajax({
+                        type: 'GET',
+                        url: './proc/getComboData.php',
+                        data: {
+                            tableName: "lib_grstype",
+                            valueMember: "id",
+                            displayMember: "`grs_type`",
+                            condition: "1=1",
+                            selected: arr[24],
+                        },
+                        success: function(response) {
+
+                            $('#cmbEdGRSType').html(response);
+                        }
+                    });
+
+                    $('#editor-one').html(arr[13]);
+                    
+                    $.ajax({
+                        type: 'GET',
+                        url: './proc/getComboData.php',
+                        data: {
+                            tableName: "lib_eoob",
+                            valueMember: "id",
+                            displayMember: "`eoob`",
+                            condition: "1=1",
+                            selected: parseInt(arr[25]),
+                        },
+                        success: function(response) {
+                            //console.log(response);
+                            $('#cmbEdEODB').html(response);
+                        }
+                    });
+
+                    $('#dtDateReported').val(arr[15]);
+
+                    $.ajax({
+                        type: 'GET',
+                        url: './proc/getComboData.php',
+                        data: {
+                            tableName: "lib_grssource",
+                            valueMember: "id",
+                            displayMember: "`source`",
+                            condition: "1=1",
+                            selected: parseInt(arr[26]),
+                        },
+                        success: function(response) {
+                            //console.log(response);
+                            $('#cmbEdSource').html(response);
+                        }
+                    });
+
+                    //ATTACHMENTS
+
+
+                    //ADJUDICATION
+                    $.ajax({
+                        type: 'GET',
+                        url: './proc/getComboData.php',
+                        data: {
+                            tableName: "lib_status",
+                            valueMember: "id",
+                            displayMember: "`status`",
+                            condition: "1=1",
+                            selected: parseInt(arr[27]),
+                        },
+                        success: function(response) {
+                            // console.log(response);
+                            $('#cmbEdStatus').html(response);
+                        }
+                    });
+
+                    $('#txtEdRemarks').html(arr[22]);
 
 
                 }
             });
 
-            //$("#dtDateConducted").val(date_conducted);
-            //get title 
-            //get intervention details
 
         } else {
-            //* LOAD DATA ENTRY FOR NEW INTERVENTION
-
+            //* LOAD DATA ENTRY FOR NEW grievance
             $('#interv_list_editor_modal_label').html('New Grievance');
 
-            //get interv component values
+           //hidden
+            $('#hid_ctrlno').val('0');
+            $('#hid_uuid').val('');
+
+            $('#hid_encoded_by').val('');
+            $('#hid_date_submitted').val('');
+            $('#hid_date_encoded').val('');
+            $('#hid_date_resolved').val('');
+
+           //TAB 1
             $.ajax({
                 type: 'GET',
                 url: './proc/getComboData.php',
                 data: {
-                    tableName: "lib_comp",
-                    valueMember: "comp_id",
-                    displayMember: "comp_desc",
-                    condition: "comp_id > 0",
-                    selected: "-1"
+                    tableName: "lib_psgc",
+                    valueMember: "DISTINCT LEFT(PSGC,4)",
+                    displayMember: "province",
+                    condition: "LEFT(PSGC,2) = '12'",
+                    selected: psgc_prov,
+                },
+                success: function(response) {
+                    
+                    $('#cmbEdProvince').html(response);
+                }
+            });
+            $('#cmbEdMunicipality').html('');
+            $('#cmbEdBarangay').html('');
+            $('#txtEdAddress').val('');
+            $('#txtEdFirstName').val('');
+            $('#txtEdMiddleName').val('');
+            $('#txtEdLastName').val('');
+            $('#txtEdExt').val('');
+            $('#txtEdContactNo').val('');
+            $('#txtEdEmail').val('');
+
+            //TAB 2
+
+            $.ajax({
+                type: 'GET',
+                url: './proc/getComboData.php',
+                data: {
+                    tableName: "lib_grstype",
+                    valueMember: "id",
+                    displayMember: "`grs_type`",
+                    condition: "1=1",
+                    selected: '',
                 },
                 success: function(response) {
 
-                    $('#cmbEdProvince').html(response);
-
-                    //reset
-                    $('#cmbEdMunicipality').html('<option value="-1">Select</option>;');
-                    $('#cmbEdBarangay').html('<option value="-1">Select</option>;');
-                    $('#txtTitle').val('');
-                    // $('#txtIntervDescription').val('');
-                    $('#editor-one').html('');
-                    $('#dtDateConducted').val(getCurrentDate());
-                    $('#numYDS').val(0);
-                    $('#hidden_interv_id').val(0);
-
+                    $('#cmbEdGRSType').html(response);
                 }
             });
-        }
 
-        //if edit mode then
-        //load date entry for cmbEdMunicipality, cmbEdBarangay
-        //select the values for each drop-down objects
+            $('#editor-one').html('');
+            
+            $.ajax({
+                type: 'GET',
+                url: './proc/getComboData.php',
+                data: {
+                    tableName: "lib_eoob",
+                    valueMember: "id",
+                    displayMember: "`eoob`",
+                    condition: "1=1",
+                    selected: '',
+                },
+                success: function(response) {
+                    //console.log(response);
+                    $('#cmbEdEODB').html(response);
+                }
+            });
+
+            $('#dtDateReported').val('');
+
+            $.ajax({
+                type: 'GET',
+                url: './proc/getComboData.php',
+                data: {
+                    tableName: "lib_grssource",
+                    valueMember: "id",
+                    displayMember: "`source`",
+                    condition: "1=1",
+                    selected: '',
+                },
+                success: function(response) {
+                    //console.log(response);
+                    $('#cmbEdSource').html(response);
+                }
+            });
+
+            //ATTACHMENTS
+
+
+            //ADJUDICATION
+            $.ajax({
+                type: 'GET',
+                url: './proc/getComboData.php',
+                data: {
+                    tableName: "lib_status",
+                    valueMember: "id",
+                    displayMember: "`status`",
+                    condition: "1=1",
+                    selected: 1,
+                },
+                success: function(response) {
+                    console.log(response);
+                    $('#cmbEdStatus').html(response);
+                }
+            });
+
+            $('#txtEdRemarks').html('');
+
+
+
+        }
 
     });
 
@@ -490,21 +681,25 @@
         e.preventDefault();
         var value = $(this).children("option:selected").val()
 
-        //get interv component values
-        $.ajax({
-            type: 'GET',
-            url: './proc/getComboData.php',
-            data: {
-                tableName: "lib_subcomp",
-                valueMember: "subcomp_id",
-                displayMember: "subcomp",
-                condition: "comp_id = " + value,
-            },
-            success: function(response) {
+            $.ajax({
+                type: 'GET',
+                url: './proc/getComboData.php',
+                data: {
+                    tableName: "lib_psgc",
+                    valueMember: "DISTINCT LEFT(PSGC,6)",
+                    displayMember: "MUNICIPALITY",
+                    condition: "LEFT(PSGC,4) = '"+value+"' ORDER BY 2",
+                    selected: '',
+                },
+                success: function(response) {
+                    //console.log(response);
+                    $('#cmbEdMunicipality').html(response);
+                    $('#cmbEdBarangay').html('');
+                }
+            });
+            
 
-                $('#cmbEdMunicipality').html(response);
-            }
-        });
+
     });
 
     //on change #cmbEdMunicipality
@@ -512,25 +707,26 @@
         e.preventDefault();
         var value = $(this).children("option:selected").val()
 
-        $.ajax({
-            type: 'GET',
-            url: './proc/getComboData.php',
-            data: {
-                tableName: "lib_programs",
-                valueMember: "program_id",
-                displayMember: "program",
-                condition: "subcomp_id = " + value,
-            },
-            success: function(response) {
+            $.ajax({
+                type: 'GET',
+                url: './proc/getComboData.php',
+                data: {
+                    tableName: "lib_psgc",
+                    valueMember: "DISTINCT LEFT(PSGC,9)",
+                    displayMember: "`BARANGAY NAME`",
+                    condition: "LEFT(PSGC,6) = '"+value+"' ORDER BY 2",
+                    selected: '',
+                },
+                success: function(response) {
 
-                $('#cmbEdBarangay').html(response);
-            }
-        });
+                    $('#cmbEdBarangay').html(response);
+                }
+            });
     });
 </script>
 
-<!-- INTERVENTION EDITOR Modal  -->
-<div class="modal fade bd-example-modal-lg" id="interv_list_editor_modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<!-- grievance EDITOR Modal  -->
+<div class="modal fade bd-example-modal-lg" id="interv_list_editor_modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-content">
@@ -553,244 +749,279 @@
                     </div>
 
                     <form>
+                        <input type="hidden" id="hid_ctrlno" name="hid_ctrlno" value="0">
+                        <input type="hidden" id="hid_uuid" name="hid_uuid" value="">
+                        <input type="hidden" id="hid_date_submitted" name="hid_date_submitted" value="">
+                        <input type="hidden" id="hid_date_resolved" name="hid_date_resolved" value="">
+                        <input type="hidden" id="hid_date_encoded" name="hid_date_encoded" value="">
+                        <input type="hidden" id="hid_encoded_by" name="hid_encoded_by" value="">
 
-<div class="x_content">
+                        <div class="x_content">
 
-                    <ul class="nav nav-tabs bar_tabs" id="myTab" role="tablist">
-                      <li class="nav-item">
-                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Complainant Info</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Grievance Info</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Adjudication</a>
-                      </li>
-                    </ul>
-                    <div class="tab-content" id="myTabContent">
-                      <div class="tab-pane fade active show" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <ul class="nav nav-tabs bar_tabs" id="myTab" role="tablist">
+                          <li class="nav-item">
+                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Complainant Info</a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Grievance Info</a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#attachments" role="tab" aria-controls="profile" aria-selected="false">Attachments</a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Adjudication</a>
+                          </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                          <div class="tab-pane fade active show" id="home" role="tabpanel" aria-labelledby="home-tab">
 
-                        <div class="form-group">
-                            <input type="hidden" name="hidden_interv_id" id="hidden_interv_id" value="0">
-                            <input type="hidden" name="hidden_hhid" id="hidden_hhid" value="">
-                            <label for="cmbEdProvince" class="control-label has-error">Province</label>
-                            <select id="cmbEdProvince" name="cmbEdProvince" required="required" class="select form-control">
-                                <option value="-1">Select</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="cmbEdMunicipality" class="control-label">Municipality</label>
-                            <select id="cmbEdMunicipality" name="cmbEdMunicipality" class="select form-control" required="required">
-                                <option value="-1">Select</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="cmbEdBarangay" class="control-label">Barangay</label>
-                            <select id="cmbEdBarangay" name="cmbEdBarangay" class="select form-control" required="required">
-                                <option value="-1">Select</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="txtEdFirstName" class="control-label">First Name</label>
-                            <div class="input-group">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-users"></i>
-                                </div>
-                                <input id="txtEdFirstName" name="txtEdFirstName" type="text" class="form-control" required="required" value="">
+                            <div class="form-group">
+                                <input type="hidden" name="hidden_interv_id" id="hidden_interv_id" value="0">
+                                <input type="hidden" name="hidden_hhid" id="hidden_hhid" value="">
+                                <label for="cmbEdProvince" class="control-label has-error">Province <font color="red">*</font> </label>
+                                <select id="cmbEdProvince" name="cmbEdProvince" required="required" class="select form-control">
+                                    <option value="-1">Select</option>
+                                </select>
                             </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="txtEdMiddleName" class="control-label">Middle Name</label>
-                            <div class="input-group">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-users"></i>
-                                </div>
-                                <input id="txtEdMiddleName" name="txtEdMiddleName" type="text" class="form-control" required="required" value="">
+                            <div class="form-group">
+                                <label for="cmbEdMunicipality" class="control-label">Municipality <font color="red">*</font></label>
+                                <select id="cmbEdMunicipality" name="cmbEdMunicipality" class="select form-control" required="required">
+                                    <option value="-1">Select</option>
+                                </select>
                             </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="txtEdLastName" class="control-label">Last Name</label>
-                            <div class="input-group">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-users"></i>
-                                </div>
-                                <input id="txtEdLastName" name="txtEdLastName" type="text" class="form-control" required="required" value="">
+                            <div class="form-group">
+                                <label for="cmbEdBarangay" class="control-label">Barangay <font color="red">*</font></label>
+                                <select id="cmbEdBarangay" name="cmbEdBarangay" class="select form-control" required="required">
+                                    <option value="-1">Select</option>
+                                </select>
                             </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="txtEdExt" class="control-label">Ext.</label>
-                            <div class="input-group">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-users"></i>
-                                </div>
-                                <input id="txtEdExt" name="txtEdExt" type="text" class="form-control" required="required" value="">
+                            <div class="form-group">
+                                <label for="cmbEdBarangay" class="control-label">Address</label>
+                                <textarea id=txtEdAddress class="form-control"></textarea>
                             </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label for="txtEdContactNo" class="control-label">Contact Number</label>
-                            <div class="input-group">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-users"></i>
+                            <div class="form-group">
+                                <label for="txtEdFirstName" class="control-label">First Name <font color="red">*</font></label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-users"></i>
+                                    </div>
+                                    <input id="txtEdFirstName" name="txtEdFirstName" type="text" class="form-control" required="required" value="">
                                 </div>
-                                <input id="txtEdContactNo" name="txtEdContactNo" type="text" class="form-control" required="required" value="">
                             </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label for="txtEdEmail" class="control-label">Email</label>
-                            <div class="input-group">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-users"></i>
+                            <div class="form-group">
+                                <label for="txtEdMiddleName" class="control-label">Middle Name</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-users"></i>
+                                    </div>
+                                    <input id="txtEdMiddleName" name="txtEdMiddleName" type="text" class="form-control" required="required" value="">
                                 </div>
-                                <input id="txtEdEmail" name="txtEdEmail" type="email" class="form-control" required="required" value="">
                             </div>
-                        </div>
 
-
-                        <div class="form-group">
-                            <label for="dtDateConducted" class="control-label">Date Conducted</label>
-                            <div class="input-group">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-calendar"></i>
+                            <div class="form-group">
+                                <label for="txtEdLastName" class="control-label">Last Name <font color="red">*</font></label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-users"></i>
+                                    </div>
+                                    <input id="txtEdLastName" name="txtEdLastName" type="text" class="form-control" required="required" value="">
                                 </div>
-                                <input id="dtDateConducted" name="dtDateConducted" type="date" class="form-control" required="required">
                             </div>
-                        </div>
 
-                      </div>
-                      <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-
-                        <div class="form-group">
-                            <label for="txtTitle" class="control-label">Title</label>
-                            <div class="input-group">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-amazon"></i>
+                            <div class="form-group">
+                                <label for="txtEdExt" class="control-label">Ext.</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-users"></i>
+                                    </div>
+                                    <input id="txtEdExt" name="txtEdExt" type="text" class="form-control" required="required" value="">
                                 </div>
-                                <input id="txtTitle" name="txtTitle" type="text" class="form-control" required="required">
                             </div>
-                        </div>
-<!--                         
-                        <div class="form-group">
-                            <label for="txtIntervDescription" class="control-label">Intervention Details</label>
-                            <textarea id="txtIntervDescription" name="txtIntervDescription" cols="40" rows="5" class="form-control" aria-describedby="txtIntervDescriptionHelpBlock" required="required"></textarea>
-                            <span id="txtIntervDescriptionHelpBlock" class="help-block">State the comprehensive intervention</span>
-                        </div>
- -->
-                        <div class="form-group">
-                            <label for="txtIntervDescription" class="control-label">Intervention Details</label>
 
-                            <!-- editor-one wrapper -->
-                            <div class="x_content">
-                              <div id="alerts"></div>
-                              <div class="btn-toolbar editor" data-role="editor-toolbar" data-target="#editor-one">
-                                <div class="btn-group">
-                                  <a class="btn dropdown-toggle" data-toggle="dropdown" title="Font"><i class="fa fa-font"></i><b class="caret"></b></a>
-                                  <ul class="dropdown-menu">
-                                  </ul>
+                            <div class="form-group">
+                                <label for="txtEdContactNo" class="control-label">Contact Number <font color="red">*</font></label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-users"></i>
+                                    </div>
+                                    <input id="txtEdContactNo" name="txtEdContactNo" type="text" class="form-control" required="required" value="">
                                 </div>
+                            </div>
 
-                                <div class="btn-group">
-                                  <a class="btn dropdown-toggle" data-toggle="dropdown" title="Font Size"><i class="fa fa-text-height"></i>&nbsp;<b class="caret"></b></a>
-                                  <ul class="dropdown-menu">
-                                    <li>
-                                      <a data-edit="fontSize 5">
-                                        <p style="font-size:17px">Huge</p>
-                                      </a>
-                                    </li>
-                                    <li>
-                                      <a data-edit="fontSize 3">
-                                        <p style="font-size:14px">Normal</p>
-                                      </a>
-                                    </li>
-                                    <li>
-                                      <a data-edit="fontSize 1">
-                                        <p style="font-size:11px">Small</p>
-                                      </a>
-                                    </li>
-                                  </ul>
+                            <div class="form-group">
+                                <label for="txtEdEmail" class="control-label">Email</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-users"></i>
+                                    </div>
+                                    <input id="txtEdEmail" name="txtEdEmail" type="email" class="form-control" required="required" value="">
                                 </div>
+                            </div>
 
-                                <div class="btn-group">
-                                  <a class="btn" data-edit="bold" title="Bold (Ctrl/Cmd+B)"><i class="fa fa-bold"></i></a>
-                                  <a class="btn" data-edit="italic" title="Italic (Ctrl/Cmd+I)"><i class="fa fa-italic"></i></a>
-                                  <a class="btn" data-edit="strikethrough" title="Strikethrough"><i class="fa fa-strikethrough"></i></a>
-                                  <a class="btn" data-edit="underline" title="Underline (Ctrl/Cmd+U)"><i class="fa fa-underline"></i></a>
-                                </div>
 
-                                <div class="btn-group">
-                                  <a class="btn" data-edit="insertunorderedlist" title="Bullet list"><i class="fa fa-list-ul"></i></a>
-                                  <a class="btn" data-edit="insertorderedlist" title="Number list"><i class="fa fa-list-ol"></i></a>
-                                  <a class="btn" data-edit="outdent" title="Reduce indent (Shift+Tab)"><i class="fa fa-dedent"></i></a>
-                                  <a class="btn" data-edit="indent" title="Indent (Tab)"><i class="fa fa-indent"></i></a>
-                                </div>
 
-                                <div class="btn-group">
-                                  <a class="btn" data-edit="justifyleft" title="Align Left (Ctrl/Cmd+L)"><i class="fa fa-align-left"></i></a>
-                                  <a class="btn" data-edit="justifycenter" title="Center (Ctrl/Cmd+E)"><i class="fa fa-align-center"></i></a>
-                                  <a class="btn" data-edit="justifyright" title="Align Right (Ctrl/Cmd+R)"><i class="fa fa-align-right"></i></a>
-                                  <a class="btn" data-edit="justifyfull" title="Justify (Ctrl/Cmd+J)"><i class="fa fa-align-justify"></i></a>
-                                </div>
+                          </div>
+                          <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
 
-                                <div class="btn-group">
-                                  <a class="btn dropdown-toggle" data-toggle="dropdown" title="Hyperlink"><i class="fa fa-link"></i></a>
-                                  <div class="dropdown-menu input-append">
-                                    <input class="span2" placeholder="URL" type="text" data-edit="createLink" />
-                                    <button class="btn" type="button">Add</button>
+
+
+                            <!--//PAGE 2  -->
+
+                            <div class="form-group">
+                                <label for="cmbEdGRSType" class="control-label">Type of Grievance <font color="red">*</font></label>
+                                <select id="cmbEdGRSType" name="cmbEdGRSType" class="select form-control" required="required">
+                                    <option value="-1">Select</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="txtIntervDescription" class="control-label">Grievance Details <font color="red">*</font></label>
+
+                                <!-- editor-one wrapper -->
+                                <div class="x_content">
+                                  <div id="alerts"></div>
+                                  <div class="btn-toolbar editor" data-role="editor-toolbar" data-target="#editor-one">
+<!--                                     <div class="btn-group">
+                                      <a class="btn dropdown-toggle" data-toggle="dropdown" title="Font"><i class="fa fa-font"></i><b class="caret"></b></a>
+                                      <ul class="dropdown-menu">
+                                            <li></li>
+                                      </ul>
+                                    </div> -->
+
+                                    <div class="btn-group">
+                                      <a class="btn dropdown-toggle" data-toggle="dropdown" title="Font Size"><i class="fa fa-text-height"></i>&nbsp;<b class="caret"></b></a>
+                                      <ul class="dropdown-menu">
+                                        <li>
+                                          <a data-edit="fontSize 5">
+                                            <p style="font-size:17px">Huge</p>
+                                          </a>
+                                        </li>
+                                        <li>
+                                          <a data-edit="fontSize 3">
+                                            <p style="font-size:14px">Normal</p>
+                                          </a>
+                                        </li>
+                                        <li>
+                                          <a data-edit="fontSize 1">
+                                            <p style="font-size:11px">Small</p>
+                                          </a>
+                                        </li>
+                                      </ul>
+                                    </div>
+
+                                    <div class="btn-group">
+                                      <a class="btn" data-edit="bold" title="Bold (Ctrl/Cmd+B)"><i class="fa fa-bold"></i></a>
+                                      <a class="btn" data-edit="italic" title="Italic (Ctrl/Cmd+I)"><i class="fa fa-italic"></i></a>
+                                      <a class="btn" data-edit="strikethrough" title="Strikethrough"><i class="fa fa-strikethrough"></i></a>
+                                      <a class="btn" data-edit="underline" title="Underline (Ctrl/Cmd+U)"><i class="fa fa-underline"></i></a>
+                                    </div>
+
+                                    <div class="btn-group">
+                                      <a class="btn" data-edit="insertunorderedlist" title="Bullet list"><i class="fa fa-list-ul"></i></a>
+                                      <a class="btn" data-edit="insertorderedlist" title="Number list"><i class="fa fa-list-ol"></i></a>
+                                      <a class="btn" data-edit="outdent" title="Reduce indent (Shift+Tab)"><i class="fa fa-dedent"></i></a>
+                                      <a class="btn" data-edit="indent" title="Indent (Tab)"><i class="fa fa-indent"></i></a>
+                                    </div>
+
+                                    <div class="btn-group">
+                                      <a class="btn" data-edit="justifyleft" title="Align Left (Ctrl/Cmd+L)"><i class="fa fa-align-left"></i></a>
+                                      <a class="btn" data-edit="justifycenter" title="Center (Ctrl/Cmd+E)"><i class="fa fa-align-center"></i></a>
+                                      <a class="btn" data-edit="justifyright" title="Align Right (Ctrl/Cmd+R)"><i class="fa fa-align-right"></i></a>
+                                      <a class="btn" data-edit="justifyfull" title="Justify (Ctrl/Cmd+J)"><i class="fa fa-align-justify"></i></a>
+                                    </div>
+
+                                    <div class="btn-group">
+                                      <a class="btn dropdown-toggle" data-toggle="dropdown" title="Hyperlink"><i class="fa fa-link"></i></a>
+                                      <div class="dropdown-menu input-append">
+                                        <input class="span2" placeholder="URL" type="text" data-edit="createLink" />
+                                        <button class="btn" type="button">Add</button>
+                                      </div>
+                                      <a class="btn" data-edit="unlink" title="Remove Hyperlink"><i class="fa fa-cut"></i></a>
+                                    </div>
+
+                                    <div class="btn-group">
+                                      <a class="btn" title="Insert picture (or just drag & drop)" id="pictureBtn"><i class="fa fa-picture-o"></i></a>
+                                      <input type="file" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage" />
+                                    </div>
+
+                                    <div class="btn-group">
+                                      <a class="btn" data-edit="undo" title="Undo (Ctrl/Cmd+Z)"><i class="fa fa-undo"></i></a>
+                                      <a class="btn" data-edit="redo" title="Redo (Ctrl/Cmd+Y)"><i class="fa fa-repeat"></i></a>
+                                    </div>
                                   </div>
-                                  <a class="btn" data-edit="unlink" title="Remove Hyperlink"><i class="fa fa-cut"></i></a>
+                                  <div id="editor-one" class="editor-wrapper"></div>
+                                  <textarea name="descr" id="descr" style="display:none;"></textarea>
+                                  <br />
+                                  <div class="ln_solid"></div>
                                 </div>
-
-                                <div class="btn-group">
-                                  <a class="btn" title="Insert picture (or just drag & drop)" id="pictureBtn"><i class="fa fa-picture-o"></i></a>
-                                  <input type="file" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage" />
-                                </div>
-
-                                <div class="btn-group">
-                                  <a class="btn" data-edit="undo" title="Undo (Ctrl/Cmd+Z)"><i class="fa fa-undo"></i></a>
-                                  <a class="btn" data-edit="redo" title="Redo (Ctrl/Cmd+Y)"><i class="fa fa-repeat"></i></a>
-                                </div>
-                              </div>
-                              <div id="editor-one" class="editor-wrapper"></div>
-                              <textarea name="descr" id="descr" style="display:none;"></textarea>
-                              <br />
-                              <div class="ln_solid"></div>
+                             <!-- /editor-one wrapper -->
                             </div>
-                         <!-- /editor-one wrapper -->
 
+                            <div class="form-group">
+                                <label for="cmbEdEODB" class="control-label">EODB <font color="red">*</font></label>
+                                <select id="cmbEdEODB" name="cmbEdEODB" class="select form-control" required="required">
+                                    <option value="-1">Select</option>
+                                </select>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="dtDateReported" class="control-label">Date Reported <font color="red">*</font></label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input id="dtDateReported" name="dtDateReported" type="date" class="form-control" required="required">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cmbEdSource" class="control-label">SOURCE OF GRIEVANCE <font color="red">*</font></label>
+                                <select id="cmbEdSource" name="cmbEdSource" class="select form-control" required="required">
+                                    <option value="-1">Select</option>
+                                </select>
+                            </div>
+
+
+
+                          </div>
+                          <div class="tab-pane fade" id="attachments" role="tabpanel" aria-labelledby="contact-tab">
+                              Under construction
+                          </div>
+
+                          <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                            <div class="form-group">
+                                <label for="cmbEdStatus" class="control-label">Status <font color="red">*</font></label>
+                                <select id="cmbEdStatus" name="cmbEdStatus" class="select form-control" required="required">
+                                    <option value="-1">Select</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="txtEdRemarks" class="control-label">Remarks</label>
+                                <textarea id=txtEdRemarks class="form-control"></textarea>
+                            </div>
+                          </div>
 
                         </div>
-
-                        <div class="form-group">
-                            <button name="submit" type="submit" class="btn btn-primary" id=btnSubmitIntv name=btnSubmitIntv>Save</button>
-                        </div>
-
                       </div>
-                      <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                        xxFood truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo
-                            booth letterpress, commodo enim craft beer mlkshk 
-                      </div>
+
+
+                    <div class="form-group">
+                        <button name="submit" type="submit" class="btn btn-primary" id=btnSubmitGrievamce name=btnSubmitGrievamce>Save</button>
                     </div>
-                  </div>
-
-
 
 
 
 
 
                     </form>
-
                 </div>
-
             </div>
-
         </div>
     </div>
 </div>
-<!-- /INTERVENTION EDITOR Modal  -->
+<!-- /grievance EDITOR Modal  -->
 

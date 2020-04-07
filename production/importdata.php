@@ -3,7 +3,7 @@
 
             <div class="page-title">
               <div class="title_left">
-                <h3>Consolidate *.mit files</small></h3>
+                <h3>Consolidate *.grs files</small></h3>
               </div>
 
 <!--               <div class="title_right">
@@ -46,10 +46,10 @@
 
                         <form>
                           <div class="custom-file">
-                            <input type="file"  class="custom-file-input" id="files" multiple accept=".imt;" name="files[]">
+                            <input type="file"  class="custom-file-input" id="files" multiple accept=".grs;" name="files[]">
                             <label class="custom-file-label" for="customFile">Choose file</label>
                           </div>
-                          <br><br><button disabled id="btn_merge_imt" class="btn btn-sm btn-success btn-block" type="button">Upload</button>
+                          <br><br><button disabled id="btn_merge_grs" class="btn btn-sm btn-success btn-block" type="button">Upload</button>
 
                         </form>          
 
@@ -106,25 +106,6 @@
 
 
 <Script>
-   // $(document).on('click', '#btn_merge_imt', function(e){
-   //    e.preventDefault();
-   //    var form_data = new FormData();
-   //    alert(form_data);
-
-   //   $.ajax({
-   //          url: 'proc/imt_upload_proc.php', /*point to server-side PHP script */
-   //          dataType: 'text',   what to expect back from the PHP script, if anything
-   //          cache: false,
-   //          contentType: false,
-   //          processData: false,
-   //          data: form_data,                         
-   //          type: 'post',
-   //          success: function(res){
-   //             console.log(res);
-   //          }
-   //       });      
-   //     });
-
 
 $(document).ready(function(){
    $('#files').on('change', function(e){ 
@@ -132,13 +113,13 @@ $(document).ready(function(){
        $('#filelist').html('');
        for (var index = 0; index < totalfiles; index++) {
             var fileName = e.target.files[index].name;
-            $('#btn_merge_imt').removeAttr('disabled');
+            $('#btn_merge_grs').removeAttr('disabled');
             $('#filelist').append('<div class="right"><h3><i class="fa fa-check-square text-success"></i>  '+fileName+' <small></small></h3></div>');
        }
    });
-   $(document).on('click', '#btn_merge_imt', function(e){
+   $(document).on('click', '#btn_merge_grs', function(e){
       e.preventDefault();
-       $('#btn_merge_imt').attr('disabled');
+       $('#btn_merge_grs').attr('disabled');
        var form_data = new FormData();
 
        // Read selected files
@@ -152,7 +133,7 @@ $(document).ready(function(){
              
        // AJAX request
        $.ajax({
-         url: 'proc/imt_upload_proc.php', 
+         url: 'proc/grs_upload_proc.php', 
          type: 'post',
          data: form_data,
          //dataType: 'json',

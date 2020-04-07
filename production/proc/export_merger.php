@@ -4,9 +4,9 @@
   require_once('../udf/udf.php');
   include '../dbconnect.php';
 
-$res_intvlist = mysqli_query($con, "SELECT * FROM intervensions") or die(mysqli_error());
+$res_intvlist = mysqli_query($con, "SELECT * FROM grievances") or die(mysqli_error());
 
-download_send_headers("data_export_" . date("Y-m-d") . ".imt");
+download_send_headers("data_export_" . date("Y-m-d") . ".grs");
 $data = mysqli_fetch_all($res_intvlist);
 $encode_arr = encode_arr($data);
 //$decode_arr = decode_arr($encode_arr);

@@ -38,21 +38,23 @@ CREATE TABLE `grievances` (
   `LASTNAME` varchar(50) COLLATE ascii_bin DEFAULT NULL,
   `EXT` varchar(3) COLLATE ascii_bin DEFAULT NULL,
   `PSGC` varchar(9) COLLATE ascii_bin DEFAULT NULL,
+  `ADDRESS` text COLLATE ascii_bin DEFAULT NULL,
   `CONTACTNO` varchar(50) COLLATE ascii_bin DEFAULT NULL,
   `EMAIL` varchar(50) COLLATE ascii_bin DEFAULT NULL,
   `GRS_TYPE` int(11) DEFAULT NULL,
   `DESCRIPTION` text COLLATE ascii_bin DEFAULT NULL,
   `EOOB` int(11) DEFAULT NULL,
-  `DATE_REPORTED` datetime DEFAULT NULL,
+  `DATE_REPORTED` date DEFAULT NULL,
   `GRS_SOURCE` int(11) DEFAULT NULL,
   `STATUS` int(11) DEFAULT NULL,
-  `DATE_SUBMITTED` datetime DEFAULT NULL,
-  `DATE_RESOLVED` datetime DEFAULT NULL,
-  `ENCODED_BY` int(11) DEFAULT NULL,
+  `DATE_SUBMITTED` date DEFAULT NULL,
+  `DATE_RESOLVED` date DEFAULT NULL,
+  `ENCODED_BY` varchar(100) COLLATE ascii_bin DEFAULT NULL,
   `DATE_ENCODED` datetime DEFAULT NULL,
   `Remarks` text COLLATE ascii_bin DEFAULT NULL,
+  `uid` varchar(50) COLLATE ascii_bin DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
 
 /*Table structure for table `images` */
 
@@ -93,7 +95,7 @@ CREATE TABLE `lib_grstype` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `grs_type` varchar(100) COLLATE ascii_bin DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
 
 /*Table structure for table `lib_psgc` */
 

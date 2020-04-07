@@ -34,6 +34,7 @@
                         <div class="col-md-9 col-sm-9 ">
                           <select class="select2_single form-control" tabindex="-1" id=optionRegion name="optionRegion" >
                             <option value='-1'>Select</option>
+                            <option value='12'>Region XII</option>
                           </select>
                         </div>
                       </div>
@@ -65,25 +66,16 @@
                         <label class="control-label col-md-3 col-sm-3 ">TYPE OF REPORTS</label>
                         <div class="col-md-9 col-sm-9 ">
                           <select class="select2_group form-control" id=optionReportType name="optionReportType">
-                            <optgroup label="Econimic Sufficiency">
-                              <option value="imt_es">Summary of Intervention Conducted for HH beneficiaries for economic soffiencies</option>
+                            <optgroup label="Masterlists">
+                              <option value="imt_es">List of captured grievances</option>
+                              <option value="imt_es">List of ongoing grievances</option>
+                              <option value="imt_es">List of resolved grievances</option>
                               <!-- <option value="imt_es_ml">Masterlist of Intervention Provided</option> -->
                             </optgroup>
-                            <optgroup label="Social Adequacy">
-                              <option value="imt_sa">Summary of Intervention Conducted for HH beneficiaries for social adequacy</option>
+
+                            <optgroup label="Pivot">
+                              <option value="imt_sa">Summary of grievances by classification</option>
                               <!-- <option value="imt_sa_ml">Masterlist of Intervention Provided</option> -->
-                            </optgroup>
-                            <optgroup label="Other Internal Intervensions (DSWD)">
-                              <option value="imt_internal">Summary of Intervention provided by DSWD</option>
-                              <!-- <option value="imt_internal_ml">Masterlist of Intervention Provided</option> -->
-                            </optgroup>
-                            <optgroup label="External Interventions">
-                              <option value="imt_external1">Summary of Intervention provided by other government agencies</option>
-                              <!-- <option value="imt_external1_ml">Masterlist of Intervention Provided</option> -->
-                            </optgroup>
-                            <optgroup label="Other Intervensions (LGUs, CSOs/NGOs)">
-                              <option value="imt_external2">Summary of Intervention provided by LGUs, CSO/NGOs</option>
-                              <!-- <option value="imt_external2_ml">Masterlist of Intervention Provided</option> -->
                             </optgroup>
 
                           </select>
@@ -92,7 +84,7 @@
                       <div class="ln_solid"></div>
                       <div class="form-group">
                         <div class="col-md-9 col-sm-9  offset-md-3">
-                          <button type="submit" class="btn btn-success" disabled id="btnDownloadInterv">Download</button>
+                          <button type="submit" class="btn btn-success" disabled id="btnDownloadReport">Download</button>
                         </div>
                       </div>
 
@@ -116,14 +108,13 @@ $(document).ready(function(e) {
       type: 'GET',
       url: './proc/getComboData.php',
       data: {
-          tableName: "lib_address",
+          tableName: "lib_psgc",
           valueMember: "DISTINCT  region",
           displayMember: "region",
           condition: "1 = 1 ",
           selected: -1,
       },
       success: function(response) {
-          console.log(response);
           $('#optionRegion').html(response);
       }
     });
@@ -134,14 +125,14 @@ $(document).ready(function(e) {
         e.preventDefault();
         var value = $(this).children("option:selected").val()
         if (value !== -1) {
-            $('#btnDownloadInterv').removeAttr('disabled');
+            $('#btnDownloadReport').removeAttr('disabled');
         }
         //get interv component values
         $.ajax({
             type: 'GET',
             url: './proc/getComboData.php',
             data: {
-                tableName: "lib_address",
+                tableName: "lib_psgc",
                 valueMember: "DISTINCT province",
                 displayMember: "province",
                 condition: "region = '" + value + "'",
@@ -163,7 +154,7 @@ $(document).ready(function(e) {
             type: 'GET',
             url: './proc/getComboData.php',
             data: {
-                tableName: "lib_address",
+                tableName: "lib_psgc",
                 valueMember: "DISTINCT MUNICIPALITY",
                 displayMember: "MUNICIPALITY",
                 condition: "PROVINCE = '" + value + "'",
@@ -185,12 +176,13 @@ $(document).ready(function(e) {
             type: 'GET',
             url: './proc/getComboData.php',
             data: {
-                tableName: "lib_address",
-                valueMember: "DISTINCT BARANGAY",
-                displayMember: "BARANGAY",
+                tableName: "lib_psgc",
+                valueMember: "DISTINCT `BARANGAY NAME`",
+                displayMember: "`BARANGAY NAME`",
                 condition: "MUNICIPALITY = '" + value + "'",
             },
             success: function(response) {
+                console.log(response);
                 $('#optionBarangay').html(response);
             }
         });

@@ -48,7 +48,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" href="images/favicon.ico" type="image/ico" />
 
-    <title>DSWD XII Internal Monitoring System | </title>
+    <title>DSWD XII | Offline GRS System</title>
 
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
 

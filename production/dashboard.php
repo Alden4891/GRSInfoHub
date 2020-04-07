@@ -2,61 +2,48 @@
           <!-- top tiles -->
           <div class="row" style="display: inline-block;" >
           <div class="tile_count">
-            <div class="col-md-2 col-sm-4  tile_stats_count">
-              <span class="count_top"><i class="fa fa-user"></i> Total number of Intervention</span>
-              <div class="count green" id="dbw_total_interv">0&nbsp;&nbsp;</div>
-              <!-- <span class="count_bottom"><i class="green">4% </i> Employment Facilitation</span> -->
-            </div>
-            <div class="col-md-2 col-sm-4  tile_stats_count">
-              <span class="count_top"><i class="fa fa-user"></i> Employable Skills</span>
-              <div class="count" id="dbw_employable_skills">0&nbsp;&nbsp;</div>
-              <!-- <span class="count_bottom"><i class="green">4% </i> Employment Facilitation</span> -->
-            </div>
-            <div class="col-md-2 col-sm-4  tile_stats_count">
-              <span class="count_top"><i class="fa fa-user"></i> Employment Facilitation</span>
-              <div class="count" id="dbw_employment_facilitation">0&nbsp;&nbsp;</div>
-              <!-- <span class="count_bottom"><i class="green">4% </i> Employment Facilitation</span> -->
-            </div>            
-            <div class="col-md-2 col-sm-4  tile_stats_count">
-              <span class="count_top"><i class="fa fa-clock-o"></i> Social Security</span>
-              <div class="count" id="dbw_social_security">0&nbsp;&nbsp;</div>
-              <!-- <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>3% </i> From last Week</span> -->
-            </div>
-            <div class="col-md-2 col-sm-4  tile_stats_count">
-              <span class="count_top"><i class="fa fa-user"></i> Health</span>
-              <div class="count " id="dbw_health">0&nbsp;&nbsp;</div>
-              <!-- <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span> -->
-            </div>
-            <div class="col-md-2 col-sm-4  tile_stats_count">
-              <span class="count_top"><i class="fa fa-user"></i> Housing</span>
-              <div class="count" id="dbw_housing">0&nbsp;&nbsp;</div>
-              <!-- <span class="count_bottom"><i class="red"><i class="fa fa-sort-desc"></i>12% </i> From last Week</span> -->
-            </div>
-            <div class="col-md-2 col-sm-4  tile_stats_count">
-              <span class="count_top"><i class="fa fa-user"></i> Pamana</span>
-              <div class="count" id="dbw_pamana">0&nbsp;&nbsp;</div>
-              <!-- <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span> -->
-            </div>
-            <div class="col-md-2 col-sm-4  tile_stats_count">
-              <span class="count_top"><i class="fa fa-user"></i> CIU</span>
-              <div class="count" id="dbw_ciu">0&nbsp;&nbsp;</div>
-              <!-- <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span> -->
-            </div>
-            <div class="col-md-2 col-sm-4  tile_stats_count">
-              <span class="count_top"><i class="fa fa-user"></i> DTI/Government Financial Institutions</span>
-              <div class="count" id="dbw_dti">0&nbsp;&nbsp;</div>
-              <!-- <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span> -->
-            </div>
-            <div class="col-md-2 col-sm-4  tile_stats_count">
-              <span class="count_top"><i class="fa fa-user"></i> Department of Agriculture</span>
-              <div class="count" id="dbw_da">0&nbsp;&nbsp;</div>
-              <!-- <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span> -->
-            </div>
-            <div class="col-md-2 col-sm-4  tile_stats_count">
-              <span class="count_top"><i class="fa fa-user"></i> LGU, NGOs/CSOs</span>
-              <div class="count" id="dbw_lgu">0&nbsp;&nbsp;</div>
-              <!-- <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span> -->
-            </div>
+
+                    <?php 
+
+
+
+                             $cnt=0;
+                             $res_grivwidget = mysqli_query($con, "
+
+                                    SELECT 0 AS id, 'total_griev' AS grs_type,COUNT(id) AS `value` FROM db_grs.grievances
+                                    UNION ALL
+                                    SELECT
+                                        `lib_grstype`.`id`
+                                        , `lib_grstype`.`grs_type`
+                                        , COUNT(`grievances`.`id`) AS `value`
+                                    FROM
+                                        `db_grs`.`grievances`
+                                        LEFT JOIN `db_grs`.`lib_grstype` 
+                                            ON (`grievances`.`GRS_TYPE` = `lib_grstype`.`id`)
+                                    GROUP BY `lib_grstype`.`id`, `lib_grstype`.`grs_type`;
+                           
+
+                             ") or die(mysqli_error());
+                            while ($r=mysqli_fetch_array($res_grivwidget,MYSQLI_ASSOC)) {
+
+                                $grs_type=$r['grs_type'];
+                                $grs_value=$r['value'];
+
+                                $grs_type = ($grs_type=='total_griev'?'Total Grievances':$grs_type); 
+    
+                                echo "
+                                      <div class=\"col-md-2 col-sm-4  tile_stats_count\">
+                                        <span class=\"count_top\"><i class=\"fa fa-user\"></i> $grs_type</span>
+                                        <div class=\"count\" id=\"dbw_total_griev\">$grs_value&nbsp;&nbsp;</div>
+                                      </div>
+
+                                ";
+
+                            }
+                            mysqli_free_result($res_grivwidget);
+
+                        ?>
+
 
           </div>
  
@@ -72,7 +59,7 @@
 
                 <div class="row x_title">
                   <div class="col-md-6">
-                    <h3>Intervention Activities <small></small></h3>
+                    <h3>GRS Trends <small></small></h3>
                   </div>
                   <div class="col-md-6">
                     <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
@@ -87,53 +74,38 @@
                 </div>
                 <div class="col-md-3 col-sm-3  bg-white">
                   <div class="x_title">
-                    <h2>Interventions</h2>
+                    <h2>Grievances</h2>
                     <div class="clearfix"></div>
                   </div>
 
                   <div class="col-md-12 col-sm-12 ">
                     <div>
-                      <p>Economic Soficiency</p>
+                      <p>Resolved</p>
                       <div class="">
                         <div class="progress progress_sm" style="width: 76%;">
-                          <div class="progress-bar bg-green" role="progressbar" aria-valuemin="0" id="dbp_economic_sufficiency" ></div>
+                          <div class="progress-bar bg-green" role="progressbar" aria-valuemin="0" id="dbp_griev_resolved" ></div>
                         </div>
                       </div>
                     </div>
                     <div>
-                      <p>Social Adequacy</p>
+                      <p>Ongoing</p>
                       <div class="">
                         <div class="progress progress_sm" style="width: 76%;">
-                          <div class="progress-bar bg-green" role="progressbar" data-valuemin="0" id="dbp_social_adequacy"></div>
+                          <div class="progress-bar bg-green" role="progressbar" data-valuemin="0" id="dbp_griev_ongoing"></div>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div class="col-md-12 col-sm-12 ">
                     <div>
-                      <p>Internal Interventions</p>
+                      <p>Lapsed</p>
                       <div class="">
                         <div class="progress progress_sm" style="width: 76%;">
-                          <div class="progress-bar bg-green" role="progressbar" data-valuemin="0" id="dbp_internal_internation"></div>
+                          <div class="progress-bar bg-green" role="progressbar" data-valuemin="0" id="dbp_griev_lapse"></div>
                         </div>
                       </div>
                     </div>
-                    <div>
-                      <p>External Interventions</p>
-                      <div class="">
-                        <div class="progress progress_sm" style="width: 76%;">
-                          <div class="progress-bar bg-green" role="progressbar" data-valuemin="0" id="dbp_external_intervntion"></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <p>Other Interventions</p>
-                      <div class="">
-                        <div class="progress progress_sm" style="width: 76%;">
-                          <div class="progress-bar bg-green" role="progressbar" data-valuemin="0" id="dbp_other_intervntion"></div>
-                        </div>
-                      </div>
-                    </div>
+
                   </div>
 
                 </div>
@@ -150,7 +122,7 @@
             <div class="col-md-12 col-sm-4 ">
               <div class="x_panel">
                 <div class="x_title">
-                  <h2>Recent Activities <small>Sessions</small></h2>
+                  <h2>Recent Grievances <small>Sessions</small></h2>
                   <ul class="nav navbar-right panel_toolbox">
                     <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                     </li>
@@ -202,7 +174,7 @@
     // getDBRecentIntrvData.php
     $.ajax({
         type: 'get',
-        url: 'proc/getDBRecentIntrvData.php',
+        url: 'proc/getDBRecentGrievData.php',
         dataType: 'JSON',
         data: {
             startdate: '2020-01-01',
@@ -216,22 +188,21 @@
 
             for (var i=0;i<jsondata.length; i++) {
                
-              var interv_id = jsondata[i][0];
-              var subject   = jsondata[i][1];
-              var details   = jsondata[i][2];
-              var fullname  = jsondata[i][3];
-              var date_conducted = jsondata[i][4];
-              var date_encoded2 = new Date(date_conducted);
-
+              var subject = '';
+              var id = jsondata[i][0];
+              var description   = jsondata[i][1];
+              var encoder   = jsondata[i][2];
+              var date_reported  = jsondata[i][3];
+              var date_reported2 = new Date(date_reported);
 
               var today = new Date();
-              var diffMs = (today-date_encoded2); // milliseconds between now & Christmas
+              var diffMs = (today-date_reported2); // milliseconds between now & Christmas
               var diffDays = Math.floor(diffMs / 86400000); // days
               var diffMonths = Math.floor(diffMs / 8.64e+8); // days
               var diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
               var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
 
-              console.log(date_encoded2);
+              console.log(date_reported2);
               console.log(diffMonths);
               console.log(today);
 
@@ -253,9 +224,9 @@
               str += "          <a>"+subject+"</a>";
               str += "       </h2>";
               str += "       <div class=\"byline\">";
-              str += "          <span>"+duration+"</span> by <a>"+fullname+"</a>";
+              str += "          <span>"+duration+"</span> by <a>"+encoder+"</a>";
               str += "       </div>";
-              str += "      <p class=\"excerpt\">"+details.substring(0, 500);+"";
+              str += "      <p class=\"excerpt\">"+description.substring(0, 300);+"";
               str += "    ...<a href=#>Read&nbsp;More</a></p></div>";
               str += "  </div>";
               str += "</li>";                
@@ -272,7 +243,7 @@
   function init_db_componentprogress() {
     $.ajax({
         type: 'get',
-        url: 'proc/getDBComponentDataProgressBar.php',
+        url: 'proc/getDBStatusDataProgressBar.php',
         dataType: 'JSON',
         data: {
             startdate: '2020-01-01',
@@ -281,16 +252,14 @@
         success: function(response) {
             var arr_data1 = [];
             var jsondata = JSON.parse(JSON.stringify(response));
-            var total_interv = jsondata[0][2];
+            var total_griev = jsondata[0][2];
              for (var i = 1; i < jsondata.length; i++){
-                var comp_id = jsondata[i][0];
+                var id = jsondata[i][0];
                 var comp_desc = jsondata[i][1];
-                var value = jsondata[i][2]/total_interv*100;
-                if (comp_id == 1) $('#dbp_economic_sufficiency').css('width',value+'%').attr('data-transitiongoal',value).attr('aria-valuenow',value);
-                if (comp_id == 2) $('#dbp_social_adequacy').css('width',value+'%').attr('data-transitiongoal',value).attr('aria-valuenow',value);
-                if (comp_id == 3) $('#dbp_internal_internation').css('width',value+'%').attr('data-transitiongoal',value).attr('aria-valuenow',value);
-                if (comp_id == 4) $('#dbp_external_intervntion').css('width',value+'%').attr('data-transitiongoal',value).attr('aria-valuenow',value);
-                if (comp_id == 5) $('#dbp_other_intervntion').css('width',value+'%').attr('data-transitiongoal',value).attr('aria-valuenow',value);
+                var value = jsondata[i][2]/total_griev*100;
+                if (id == 1) $('#dbp_griev_ongoing').css('width',value+'%').attr('data-transitiongoal',value).attr('aria-valuenow',value);
+                if (id == 2) $('#dbp_griev_resolved').css('width',value+'%').attr('data-transitiongoal',value).attr('aria-valuenow',value);
+                if (id == 3) $('#dbp_griev_lapse').css('width',value+'%').attr('data-transitiongoal',value).attr('aria-valuenow',value);
 
              }
              // if ($("#chart_plot_01").length){
@@ -303,6 +272,7 @@
   function init_db_widgets(){
     //getDBWidgetData.php
 
+
     $.ajax({
         type: 'get',
         url: 'proc/getDBWidgetData.php',
@@ -312,28 +282,26 @@
             enddate: '2020-12-31',
         },
         success: function(response) {
+            console.log(response);
             var arr_data1 = [];
             var jsondata = JSON.parse(JSON.stringify(response));
 
              for (var i = 0; i < jsondata.length; i++){
-                var subcomp_id = jsondata[i][0];;
+                var id = jsondata[i][0];;
                 var subcomp = jsondata[i][1];
                 var value = jsondata[i][2];
 
-
-
-
-                if (subcomp_id == 0) $('#dbw_total_interv').html(value+'&nbsp;&nbsp;');
-                if (subcomp_id == 1) $('#dbw_employable_skills').html(value+'&nbsp;&nbsp;');
-                if (subcomp_id == 2) $('#dbw_employment_facilitation').html(value+'&nbsp;&nbsp;');
-                if (subcomp_id == 3) $('#dbw_social_security').html(value+'&nbsp;&nbsp;');
-                if (subcomp_id == 4) $('#dbw_health').html(value+'&nbsp;&nbsp;');
-                if (subcomp_id == 5) $('#dbw_housing').html(value+'&nbsp;&nbsp;');
-                if (subcomp_id == 6) $('#dbw_pamana').html(value+'&nbsp;&nbsp;');
-                if (subcomp_id == 7) $('#dbw_ciu').html(value+'&nbsp;&nbsp;');
-                if (subcomp_id == 8) $('#dbw_dti').html(value+'&nbsp;&nbsp;');
-                if (subcomp_id == 9) $('#dbw_da').html(value+'&nbsp;&nbsp;');
-                if (subcomp_id ==10) $('#dbw_lgu').html(value+'&nbsp;&nbsp;');
+                if (id == 0) $('#dbw_total_griev').html(value+'&nbsp;&nbsp;');
+                if (id == 1) $('#dbw_social_amelioration').html(value+'&nbsp;&nbsp;');
+                if (id == 2) $('#dbw_employment_facilitation').html(value+'&nbsp;&nbsp;');
+                if (id == 3) $('#dbw_social_security').html(value+'&nbsp;&nbsp;');
+                if (id == 4) $('#dbw_health').html(value+'&nbsp;&nbsp;');
+                if (id == 5) $('#dbw_housing').html(value+'&nbsp;&nbsp;');
+                if (id == 6) $('#dbw_pamana').html(value+'&nbsp;&nbsp;');
+                if (id == 7) $('#dbw_ciu').html(value+'&nbsp;&nbsp;');
+                if (id == 8) $('#dbw_dti').html(value+'&nbsp;&nbsp;');
+                if (id == 9) $('#dbw_da').html(value+'&nbsp;&nbsp;');
+                if (id ==10) $('#dbw_lgu').html(value+'&nbsp;&nbsp;');
                 
              }
              // if ($("#chart_plot_01").length){
@@ -397,7 +365,7 @@
     var markers;
     $.ajax({
         type: 'get',
-        url: 'proc/getDBIntervActivitiesData.php',
+        url: 'proc/getDBGrievActivitiesData.php',
         dataType: 'JSON',
         data: {
             startdate: '2020-01-01',

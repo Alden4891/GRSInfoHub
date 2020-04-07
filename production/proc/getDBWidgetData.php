@@ -5,22 +5,27 @@ include '../dbconnect.php';
 $return_arr = array();
 
 $query = "
-SELECT 0 AS `subcomp_id`,'total_ineterv' AS subcomp,COUNT(*) AS `value` FROM intervensions
+SELECT 0 AS id, 'total_interv' AS grs_type,COUNT(id) AS `value` FROM db_grs.grievances
 UNION ALL
-SELECT sc.subcomp_id,sc.subcomp, COUNT(i.interv_id) AS `value` FROM lib_subcomp sc
-INNER JOIN lib_programs p ON sc.subcomp_id = p.subcomp_id
-LEFT JOIN intervensions i ON i.program_id = p.program_id
-GROUP BY sc.subcomp_id;
+SELECT
+    `lib_grstype`.`id`
+    , `lib_grstype`.`grs_type`
+    , COUNT(`grievances`.`id`) AS `value`
+FROM
+    `db_grs`.`grievances`
+    LEFT JOIN `db_grs`.`lib_grstype` 
+        ON (`grievances`.`GRS_TYPE` = `lib_grstype`.`id`)
+GROUP BY `lib_grstype`.`id`, `lib_grstype`.`grs_type`;
 ;
 ";
 
 $result = mysqli_query($con,$query);
 
 while($row = mysqli_fetch_array($result)){
-    $subcomp_id = $row['subcomp_id'];
-    $subcomp = $row['subcomp'];
+    $id = $row['id'];
+    $grs_type = $row['grs_type'];
     $value = $row['value'];
-    $return_arr[] = array($subcomp_id,$subcomp,$value);
+    $return_arr[] = array($id,$grs_type,$value);
 }
 
 echo json_encode($return_arr);

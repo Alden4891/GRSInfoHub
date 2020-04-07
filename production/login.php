@@ -112,7 +112,7 @@
                 <br />
 
                 <div>
-                  <h1><img src="./images/pantawid.svg" style="width: 40px;fill:#ffffff;"> DSWD XII Offline GRS v0.1!</h1>
+                  <h1><img src="./images/dswd-logo-gray.svg" style="width: 40px;fill:#ffffff;"> DSWD XII Offline GRS v0.1!</h1>
                   <p>DSWD XII © 2020 All Rights Reserved.</p>
                 </div>
                               <div id=rmessagebox></div>
@@ -185,7 +185,7 @@
                 <br />
 
                 <div>
-                  <h1><i class="fa fa-paw"></i> DSWDI Offline GRS v0.1!</h1>
+                  <h1><img src="./images/dswd-logo-gray.svg" style="width: 40px;fill:#ffffff;"> DSWDI Offline GRS v0.1!</h1>
                   <p>DSWD XII © 2020 All Rights Reserved.</p>
 
                 </div>
