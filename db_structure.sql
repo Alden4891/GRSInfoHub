@@ -54,7 +54,7 @@ CREATE TABLE `grievances` (
   `Remarks` text COLLATE ascii_bin DEFAULT NULL,
   `uid` varchar(50) COLLATE ascii_bin DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
 
 /*Table structure for table `images` */
 
@@ -87,6 +87,18 @@ CREATE TABLE `lib_grssource` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
 
+/*Table structure for table `lib_grssubtype` */
+
+DROP TABLE IF EXISTS `lib_grssubtype`;
+
+CREATE TABLE `lib_grssubtype` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` int(11) DEFAULT NULL,
+  `subtype` varchar(100) COLLATE ascii_bin DEFAULT NULL,
+  `withrem` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
+
 /*Table structure for table `lib_grstype` */
 
 DROP TABLE IF EXISTS `lib_grstype`;
@@ -95,7 +107,7 @@ CREATE TABLE `lib_grstype` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `grs_type` varchar(100) COLLATE ascii_bin DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
 
 /*Table structure for table `lib_psgc` */
 

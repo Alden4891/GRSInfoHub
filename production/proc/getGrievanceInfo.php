@@ -3,7 +3,7 @@ include '../dbconnect.php';
 $ctrlno 		=  (isset($_REQUEST['ctrlno'])?$_REQUEST['ctrlno']:0); 
 
 $res = mysqli_query($con, "
-			SELECT
+          SELECT
               `grievances`.`id`
             , `grievances`.`FIRSTNAME`
             , `grievances`.`MIDDLENAME`
@@ -17,16 +17,18 @@ $res = mysqli_query($con, "
             , `grievances`.`ADDRESS`
             , `grievances`.`CONTACTNO`
             , `grievances`.`EMAIL`
-            , `lib_grstype`.`grs_type`
+            , `lib_grssubtype`.subtype
+            , `lib_grssubtype`.`id` AS grs_subtype_id
+            , `lib_grstype`.grs_type
             , `lib_grstype`.`id` AS grs_type_id
             , `grievances`.`DESCRIPTION`
             , `grievances`.`EOOB`
             , `grievances`.id AS EODB_ID
             , `grievances`.`DATE_REPORTED`
             , `lib_grssource`.`source`
-            , `lib_grssource`.`id` as 'source_id'
+            , `lib_grssource`.`id` AS 'source_id'
             , `lib_status`.`status`
-            , `lib_status`.`id` as 'status_id'
+            , `lib_status`.`id` AS 'status_id'
             , `grievances`.`DATE_SUBMITTED`
             , `grievances`.`DATE_RESOLVED`
             , `grievances`.`ENCODED_BY` 
@@ -37,8 +39,10 @@ $res = mysqli_query($con, "
             `db_grs`.`grievances`
             INNER JOIN `db_grs`.`lib_psgc` 
                 ON (`grievances`.`PSGC` = `lib_psgc`.`PSGC`)
-            INNER JOIN `db_grs`.`lib_grstype` 
-                ON (`grievances`.`GRS_TYPE` = `lib_grstype`.`id`)
+            INNER JOIN `db_grs`.`lib_grssubtype`
+                ON (`grievances`.`GRS_TYPE` = `lib_grssubtype`.`id`)
+            INNER JOIN `db_grs`.`lib_grstype`
+                ON (`lib_grstype`.`id` = `lib_grssubtype`.`type`)
             INNER JOIN `db_grs`.`lib_grssource` 
                 ON (`grievances`.`GRS_SOURCE` = `lib_grssource`.`id`)
             INNER JOIN `db_grs`.`lib_status` 
@@ -60,7 +64,7 @@ $res = mysqli_query($con, "
 			$region=$r['REGION'];
 			$province=$r['PROVINCE'];
 			$municipality=$r['MUNICIPALITY'];
-			$barangayname=$r['BARANGAYNAME'];
+			$barangayname=$r['BARANGAY NAME'];
 			$address=$r['ADDRESS'];
 			$contactno=$r['CONTACTNO'];
 			$email=$r['EMAIL'];
@@ -82,7 +86,12 @@ $res = mysqli_query($con, "
             $status_id = $r['status_id'];
             $uuid = $r['uid'];
 
-	echo "$id|$firstname|$middlename|$lastname|$ext|$psgc|$region|$province|$municipality|$barangayname|$contactno|$email|$grs_type|$description|$eoob|$date_reported|$source|$status|$date_submitted|$date_resolved|$ENCODED_BY|$date_encoded|$remarks|$address|$grs_type_id|$EODB_ID|$source_id|$status_id|$uuid";
+            $grs_subtype_id = $r['grs_subtype_id'];
+            $subtype = $r['subtype'];
+
+
+
+	echo "$id|$firstname|$middlename|$lastname|$ext|$psgc|$region|$province|$municipality|$barangayname|$contactno|$email|$grs_type|$description|$eoob|$date_reported|$source|$status|$date_submitted|$date_resolved|$ENCODED_BY|$date_encoded|$remarks|$address|$grs_type_id|$EODB_ID|$source_id|$status_id|$uuid|$grs_subtype_id|$subtype";
 
 
 include '../dbclose.php';

@@ -67,7 +67,7 @@
                                 , `lib_psgc`.`BARANGAY NAME`
                                 , `grievances`.`CONTACTNO`
                                 , `grievances`.`EMAIL`
-                                , `lib_grstype`.`grs_type`
+                                , `lib_grssubtype`.subtype
                                 , `grievances`.`DESCRIPTION`
                                 , `lib_eoob`.eoob AS 'EOOB'
                                 , `grievances`.`DATE_REPORTED`
@@ -81,8 +81,8 @@
                                 `db_grs`.`grievances`
                                 INNER JOIN `db_grs`.`lib_psgc` 
                                     ON (`grievances`.`PSGC` = `lib_psgc`.`PSGC`)
-                                INNER JOIN `db_grs`.`lib_grstype` 
-                                    ON (`grievances`.`GRS_TYPE` = `lib_grstype`.`id`)
+                                INNER JOIN `db_grs`.lib_grssubtype 
+                                    ON (`grievances`.`GRS_TYPE` = `lib_grssubtype`.`id`)
                                 INNER JOIN `db_grs`.`lib_grssource` 
                                     ON (`grievances`.`GRS_SOURCE` = `lib_grssource`.`id`)
                                 INNER JOIN `db_grs`.`lib_eoob` 
@@ -107,8 +107,8 @@
                                 $barangayname=$r['BARANGAY NAME'];
                                 $contactno=$r['CONTACTNO'];
                                 $email=$r['EMAIL'];
-                                $grs_type=$r['grs_type'];
-                                $description=substr(Strip_tags($r['DESCRIPTION']), 0,300)."... <a href=\"#\">Read more</a>";
+                                $grs_subtype=$r['subtype'];
+                                $description=substr(Strip_tags($r['DESCRIPTION']), 0,200)."... <a href=\"#\">Read more</a>";
                                 $eoob=$r['EOOB'];
                                 $date_reported=$r['DATE_REPORTED'];
                                 $source=$r['source'];
@@ -187,7 +187,8 @@
             var txtEdContactNo = $('#txtEdContactNo').val();
             var txtEdEmail = $('#txtEdEmail').val();
 
-            var cmbEdGRSType = $('#cmbEdGRSType').val();
+            var cmbEdGRSCategory = $('#cmbEdGRSCategory').val();
+            var cmbEdGRSSubtype = $('#cmbEdGRSSubtype').val();
             var description = $('#editor-one').html();
 
 
@@ -205,10 +206,8 @@
             var ctrlno = $('#hid_ctrlno').val();
             var uuid = $('#hid_uuid').val();
 
-
-
             var has_error = false;
-            if (cmbEdBarangay == null) {
+            if (cmbEdBarangay == null || cmbEdBarangay == -1) {
                 notification_show('All field with askterisk(*) is required!');
                 has_error = true;
                 return;
@@ -221,8 +220,11 @@
             } else if (txtEdContactNo == "") {
                 notification_show('Last Name is required!');
                 has_error = true;
-            } else if (cmbEdGRSType == null || cmbEdGRSType == -1) {
-                notification_show('Type of grievances is required!');
+            } else if (cmbEdGRSCategory == null || cmbEdGRSCategory == -1) {
+                notification_show('Category of grievance is required!');
+                has_error = true;
+            } else if (cmbEdGRSSubtype == null || cmbEdGRSSubtype == -1) {
+                notification_show('Type of grievance is required!');
                 has_error = true;
             } else if (description == "") {
                 notification_show('Grievance description field is required!');
@@ -253,7 +255,8 @@
                         address:txtEdAddress,
                         contactno:txtEdContactNo,
                         email:txtEdEmail,
-                        grs_type:cmbEdGRSType,
+                        grs_type:cmbEdGRSCategory,
+                        grs_subtype:cmbEdGRSSubtype,
                         description:description,
                         eoob:cmbEdEODB,
                         date_reported:dtDateReported,
@@ -412,7 +415,7 @@
                     ctrlno: ctrlno,
                 },
                 success: function(response) {
-
+                    
 
                     var arr = response.split('|');
                     /*
@@ -448,6 +451,8 @@
                              27  status_id
                              28  uuid
 
+                             29  grs_subtype_id
+                             30  subtype
                     */
 
                     //COMPLIANT INFORMATION
@@ -481,9 +486,26 @@
                         },
                         success: function(response) {
 
-                            $('#cmbEdGRSType').html(response);
+                            $('#cmbEdGRSCategory').html(response);
                         }
                     });
+
+                    $.ajax({
+                        type: 'GET',
+                        url: './proc/getComboData.php',
+                        data: {
+                            tableName: "lib_grssubtype",
+                            valueMember: "id",
+                            displayMember: "`subtype`",
+                            condition: "`type`="+ arr[24] +" ORDER BY subtype",
+                            selected: arr[29],
+                        },
+                        success: function(response) {
+
+                            $('#cmbEdGRSSubtype').html(response);
+                        }
+                    });
+
 
                     $('#editor-one').html(arr[13]);
                     
@@ -524,7 +546,7 @@
                     //ATTACHMENTS
 
 
-                    //ADJUDICATION
+                    //RESOLUTION INFORMATION
                     $.ajax({
                         type: 'GET',
                         url: './proc/getComboData.php',
@@ -579,6 +601,7 @@
             });
             $('#cmbEdMunicipality').html('');
             $('#cmbEdBarangay').html('');
+            $('#cmbEdGRSSubtype').html('');
             $('#txtEdAddress').val('');
             $('#txtEdFirstName').val('');
             $('#txtEdMiddleName').val('');
@@ -601,7 +624,7 @@
                 },
                 success: function(response) {
 
-                    $('#cmbEdGRSType').html(response);
+                    $('#cmbEdGRSCategory').html(response);
                 }
             });
 
@@ -644,7 +667,7 @@
             //ATTACHMENTS
 
 
-            //ADJUDICATION
+            //RESOLUTION INFORMATION
             $.ajax({
                 type: 'GET',
                 url: './proc/getComboData.php',
@@ -676,6 +699,29 @@
         return d.getFullYear() + '-' + (month < 10 ? '0' : '') + month + '-' + (day < 10 ? '0' : '') + day;
     }
 
+    //on change cmbEdGRSCategory
+    $(document).on('change', "#cmbEdGRSCategory", function(e) {
+        e.preventDefault();
+        var value = $(this).children("option:selected").val()
+
+            $.ajax({
+                type: 'GET',
+                url: './proc/getComboData.php',
+                data: {
+                    tableName: "lib_grssubtype",
+                    valueMember: "id",
+                    displayMember: "`subtype`",
+                    condition: "`type`="+ value +" ORDER BY subtype",
+                    selected: '',
+                },
+                success: function(response) {
+
+                    $('#cmbEdGRSSubtype').html(response);
+                }
+            });
+
+    });
+
     //on change #cmbEdProvince
     $(document).on('change', "#cmbEdProvince", function(e) {
         e.preventDefault();
@@ -697,9 +743,6 @@
                     $('#cmbEdBarangay').html('');
                 }
             });
-            
-
-
     });
 
     //on change #cmbEdMunicipality
@@ -760,16 +803,16 @@
 
                         <ul class="nav nav-tabs bar_tabs" id="myTab" role="tablist">
                           <li class="nav-item">
-                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Complainant Info</a>
+                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">COMPLAINANT INFO</a>
                           </li>
                           <li class="nav-item">
-                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Grievance Info</a>
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">GRIEVANCE INFO</a>
                           </li>
                           <li class="nav-item">
-                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#attachments" role="tab" aria-controls="profile" aria-selected="false">Attachments</a>
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#attachments" role="tab" aria-controls="profile" aria-selected="false">ATTACHMENTS</a>
                           </li>
                           <li class="nav-item">
-                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Adjudication</a>
+                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">RESOLUTION INFORMATION</a>
                           </li>
                         </ul>
                         <div class="tab-content" id="myTabContent">
@@ -870,8 +913,15 @@
                             <!--//PAGE 2  -->
 
                             <div class="form-group">
-                                <label for="cmbEdGRSType" class="control-label">Type of Grievance <font color="red">*</font></label>
-                                <select id="cmbEdGRSType" name="cmbEdGRSType" class="select form-control" required="required">
+                                <label for="cmbEdGRSCategory" class="control-label">Grievance Category <font color="red">*</font></label>
+                                <select id="cmbEdGRSCategory" name="cmbEdGRSCategory" class="select form-control" required="required">
+                                    <option value="-1">Select</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cmbEdGRSSubtype" class="control-label">Type of Grievance <font color="red">*</font></label>
+                                <select id="cmbEdGRSSubtype" name="cmbEdGRSSubtype" class="select form-control" required="required">
                                     <option value="-1">Select</option>
                                 </select>
                             </div>
@@ -987,8 +1037,92 @@
 
 
                           </div>
+
+
+
                           <div class="tab-pane fade" id="attachments" role="tabpanel" aria-labelledby="contact-tab">
-                              Under construction
+                          
+
+                    <div class="alert alert-info">
+                        <h4><i class="fa fa-info"></i> Note:</h4> This module page is currently underconstruction and subject for changes.
+
+                      </div>
+
+                            <div class="form-group">
+                                <label for="cmbEdSource" class="control-label">Upload Files <font color="red">*</font></label>
+                                <div class="input-group">
+                                  <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="inputGroupFile04">
+                                    <label class="custom-file-label" for="inputGroupFile04">Choose file</label>
+                                  </div>
+                                  <div class="input-group-append">
+                                    <button class="btn btn-info" type="button" style="font-size: 13.5px;">Upload</button>
+                                  </div>
+                                </div>
+                            </div>
+
+
+<div class="x_panel">
+                  <div class="x_title">
+                    <h2>Stripped table <small>Stripped table subtitle</small></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">Settings 1</a>
+                            <a class="dropdown-item" href="#">Settings 2</a>
+                          </div>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Filename</th>
+                          <th>Size</th>
+                          <th>Type</th>
+                          <th>Download</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th scope="row">1</th>
+                          <td>Photo1.jpg</td>
+                          <td>100kb</td>
+                          <td>Excel Spreed Sheets/xlsx</td>
+                          <td>
+                                    <button class="btn btn-info btn-sm"><i class="fa fa-download"></i></button>
+                                    <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th scope="row">2</th>
+                          <td>List.xlsx</td>
+                          <td>54kb</td>
+                          <td>Excel Spreed Sheets/xlsx</td>
+                          <td>
+                                    <button class="btn btn-info btn-sm"><i class="fa fa-download"></i></button>
+                                    <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                              
+                          </td>
+
+                        </tr>
+
+                      </tbody>
+                    </table>
+
+                  </div>
+                </div>
+
+
                           </div>
 
                           <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">

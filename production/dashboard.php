@@ -10,18 +10,19 @@
                              $cnt=0;
                              $res_grivwidget = mysqli_query($con, "
 
-                                    SELECT 0 AS id, 'total_griev' AS grs_type,COUNT(id) AS `value` FROM db_grs.grievances
-                                    UNION ALL
-                                    SELECT
-                                        `lib_grstype`.`id`
-                                        , `lib_grstype`.`grs_type`
-                                        , COUNT(`grievances`.`id`) AS `value`
-                                    FROM
-                                        `db_grs`.`grievances`
-                                        LEFT JOIN `db_grs`.`lib_grstype` 
-                                            ON (`grievances`.`GRS_TYPE` = `lib_grstype`.`id`)
-                                    GROUP BY `lib_grstype`.`id`, `lib_grstype`.`grs_type`;
-                           
+                          SELECT 0 AS id, 'total_griev' AS grs_type,COUNT(id) AS `value` FROM db_grs.grievances
+                          UNION ALL
+                          SELECT
+                              `lib_grstype`.`id`
+                              , `lib_grstype`.`grs_type`
+                              , COUNT(`grievances`.`id`) AS `value`
+                          FROM
+                              `db_grs`.`lib_grstype`
+                              INNER JOIN `db_grs`.`lib_grssubtype` 
+                                  ON (`lib_grstype`.`id` = `lib_grssubtype`.`type`)
+                              INNER JOIN `db_grs`.`grievances` 
+                                  ON (`grievances`.`GRS_TYPE` = `lib_grssubtype`.`id`)
+                          GROUP BY `lib_grstype`.`id`, `lib_grstype`.`grs_type`;                           
 
                              ") or die(mysqli_error());
                             while ($r=mysqli_fetch_array($res_grivwidget,MYSQLI_ASSOC)) {
@@ -29,15 +30,33 @@
                                 $grs_type=$r['grs_type'];
                                 $grs_value=$r['value'];
 
-                                $grs_type = ($grs_type=='total_griev'?'Total Grievances':$grs_type); 
-    
-                                echo "
-                                      <div class=\"col-md-2 col-sm-4  tile_stats_count\">
-                                        <span class=\"count_top\"><i class=\"fa fa-user\"></i> $grs_type</span>
-                                        <div class=\"count\" id=\"dbw_total_griev\">$grs_value&nbsp;&nbsp;</div>
-                                      </div>
+                                
 
-                                ";
+
+                                $grs_type = ($grs_type=='total_griev'?'Total Grievances':$grs_type); 
+                                
+                                if ($grs_type=='total_griev'){
+                                    $grs_type = 'Total Grievances';
+
+                                    echo "
+                                          <div class=\"col-md-2 col-sm-4 green tile_stats_count\">
+                                            <span class=\"count_top \"><i class=\"fa fa-user\"></i> $grs_type</span>
+                                            <div class=\"count green\" id=\"dbw_total_griev\">$grs_value&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                                          </div>
+                                    ";
+
+                                }else{
+                                    echo "
+                                          <div class=\"col-md-2 col-sm-4  tile_stats_count\">
+                                            <span class=\"count_top\"><i class=\"fa fa-user\"></i> $grs_type</span>
+                                            <div class=\"count \" id=\"dbw_total_griev\">$grs_value&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                                          </div>
+
+                                    ";
+
+                                }
+
+
 
                             }
                             mysqli_free_result($res_grivwidget);
