@@ -16,6 +16,19 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/`db_grs` /*!40100 DEFAULT CHARACTER SET 
 
 USE `db_grs`;
 
+/*Table structure for table `attachments` */
+
+DROP TABLE IF EXISTS `attachments`;
+
+CREATE TABLE `attachments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `data` longblob DEFAULT NULL,
+  `filename` varchar(200) COLLATE ascii_bin DEFAULT NULL,
+  `size` double DEFAULT NULL,
+  `mime` varchar(10) COLLATE ascii_bin DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
+
 /*Table structure for table `grantees` */
 
 DROP TABLE IF EXISTS `grantees`;

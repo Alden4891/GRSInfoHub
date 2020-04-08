@@ -1,32 +1,47 @@
-<?php
-$html = "<b>sample interv</b><div><ul><li>the quick brow fox jumps over the lazy dog near the riover bank!</li><li>john smith is a gay</li><li>who is john gult</li><li>therer is no spoon</li><li><strike>greed is good</strike></li><li>have some foccee</li></ul></div>";
+<form method='post' action='' enctype="multipart/form-data">
+   <input type="file" id='files' name="files[]" multiple><br>
+   <input type="button" id="submit" value='Upload'>
+</form>
+<!-- Preview -->
+<div id='preview'></div>
+<script >
+    $(document).ready(function(){
 
-$data = htmlToText($html);
-echo "$data<hr>";
+$('#submit').click(function(){
+    
+   var form_data = new FormData();
 
-//html to string
-function htmlToText($htm){
+   // Read selected files
+   var totalfiles = document.getElementById('files').files.length;
+   for (var index = 0; index < totalfiles; index++) {
+      form_data.append("files[]", document.getElementById('files').files[index]);
+   }
 
-    $htm =  str_replace("<br>", "", $htm);
-    $htm =  str_replace("<li>", "\t", $htm);
-    $htm =  str_replace("</li>", "\n", $htm);
+   // AJAX request
+   $.ajax({
+     url: 'upload.php', 
+     type: 'post',
+     data: form_data,
+     //dataType: 'json',
+     contentType: false,
+     processData: false,
+     success: function (response) {
 
-    $htm =  str_replace("/", "", $htm);
+         $('#preview').html(response);
+         //alert(1);
+         //console.log(response);
+       // for(var index = 0; index < response.length; index++) {
+       //   var src = response[index];
 
-    $htm =  str_replace("<div>", "\n", $htm);
+       //   // Add img element in <div id='preview'>
+       //   $('#preview').append(src);
+       // }
 
-    $htm =  str_replace("<ul>", "\n", $htm);
-    $htm =  str_replace("<ol>", "", $htm);
-    $htm =  str_replace("<i>", "", $htm);
-    $htm =  str_replace("<b>", "", $htm);
-    $htm =  str_replace("<u>", "", $htm);
-    $htm =  str_replace("<strike>", "", $htm);
+     }
+   });
 
-    $data = nl2br($htm);
-    $data = str_replace("\r", "", $data);
-    $data = str_replace("\n", "", $data);
-    $data = str_replace("<br>", "\n", $data); 
+});
 
-    return $data;
-}
-?>
+});
+
+</script>

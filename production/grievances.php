@@ -1054,7 +1054,7 @@
                                 <label for="cmbEdSource" class="control-label">Upload Files <font color="red">*</font></label>
                                 <div class="input-group">
                                   <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="inputGroupFile04">
+                                    <input type="file" class="custom-file-input" id="inputGroupFile04" multiple>
                                     <label class="custom-file-label" for="inputGroupFile04">Choose file</label>
                                   </div>
                                   <div class="input-group-append">
@@ -1066,7 +1066,7 @@
 
 <div class="x_panel">
                   <div class="x_title">
-                    <h2>Stripped table <small>Stripped table subtitle</small></h2>
+                    <h2>Attachments <small>You have to download the file in order to view it.</small></h2>
                     <ul class="nav navbar-right panel_toolbox">
                       <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                       </li>

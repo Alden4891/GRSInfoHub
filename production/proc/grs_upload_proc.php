@@ -31,8 +31,13 @@ for($index = 0;$index < $countfiles;$index++){
    $success_count = 0;
    $exists_count = 0;
    if(in_array($ext, $valid_ext)){
-        $file = decode_arr(file_get_contents($_FILES['files']['tmp_name'][$index]));
         
+        $data = decode_arr(file_get_contents($_FILES['files']['tmp_name'][$index]));
+        $arr_data = explode(",",$data);
+        $file = $arr_data[0];
+        $attachments = $arr_data[1];
+
+
         foreach ($file as $value) {
             $entry_count++;
 
@@ -70,6 +75,15 @@ for($index = 0;$index < $countfiles;$index++){
                 $exists_count++;
             }
         }
+
+         foreach ($attachments as $value) {
+            $binary = $value[1];
+            $filename = $value[2];
+            $size   = $value[3];
+            $ext = $value[4];
+
+            insert binary data here*** im here
+         }
    }
 
       $log .= "<B>Filename</B>: $filename";

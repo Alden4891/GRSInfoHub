@@ -4,15 +4,22 @@
   require_once('../udf/udf.php');
   include '../dbconnect.php';
 
-$res_intvlist = mysqli_query($con, "SELECT * FROM grievances") or die(mysqli_error());
+$res_data = mysqli_query($con, "SELECT * FROM grievances;") or die(mysqli_error());
+$res_attachments = mysqli_query($con, "SELECT * FROM attachments;") or die(mysqli_error());
 
 download_send_headers("data_export_" . date("Y-m-d") . ".grs");
-$data = mysqli_fetch_all($res_intvlist);
-$encode_arr = encode_arr($data);
+$data = mysqli_fetch_all($res_data);
+$attachments = mysqli_fetch_all($res_attachments);
+
+$enc_data = encode_arr($data);
+$enc_attachments = encode_arr($attachments);
+
 //$decode_arr = decode_arr($encode_arr);
 
-mysqli_free_result($res_intvlist);
-echo "$encode_arr";
+mysqli_free_result($res_data);
+mysqli_free_result($res_attachments);
+
+echo "$enc_data|$enc_attachments";
 include '../dbclose.php';
 
 
