@@ -413,12 +413,92 @@
         <!-- /footer content -->
       </div>
     </div>
-  <script>
-  
 
+<div class="modal fade" id="previewGrievModal" tabindex="-1" role="dialog" aria-labelledby="previewGrievModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="previewGrievModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="previewGrievModalContent">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
 $(document).ready(function (e) {
 
 
+//preview interv.
+$(document).on('click','#viewGriev',function(){
+
+    var ctrlno = $(this).attr('ctrlno');
+ 
+            $.ajax({
+                type: 'GET',
+                url: './proc/getGrievanceInfo.php',
+                data: {
+                    ctrlno: ctrlno,
+                },
+                success: function(response) {
+                    
+
+                    var arr = response.split('|');
+                    /*
+                    RESULTS:
+                        r[0] = `id`
+                        r[1] = `FIRSTNAME`
+                        r[2] = `MIDDLENAME`
+                        r[3] = `LASTNAME`
+                        r[4] = `EXT`
+                        r[5] = `PSGC`
+                        r[6] = `REGION`
+                        r[7] = `PROVINCE`
+                        r[8] = `MUNICIPALITY`
+                        r[9] = `BARANGAY`
+                        r[10] = `CONTACTNO`
+                        r[11] = `EMAIL`
+                        r[12] = `grs_type`
+                        r[13] = `DESCRIPTION`
+                        r[14] = `EOOB`
+                        r[15] = `DATE_REPORTED`
+                        r[16] = `source`
+                        r[17] = `status`
+                        r[18] = `DATE_SUBMITTED`
+                        r[19] = `DATE_RESOLVED`
+                        r[20] = `ENCODED_BY`
+                        r[21] = `DATE_ENCODED`
+                        r[22] = `Remarks`
+                        r[23] = `address`
+
+                             24  grs_type_id
+                             25  EODB_ID
+                             26  source_id
+                             27  status_id
+                             28  uuid
+
+                             29  grs_subtype_id
+                             30  subtype
+                    */
+                  $('#previewGrievModalLabel').html('CTRL#' + ctrlno);
+                  $('#previewGrievModalContent').html(arr[13]);
+
+                }
+            });
+
+});
+
+
+//check file type
 $('#imgfile').bind('change', function() {
     if (this.files[0].size > 1000000){
         $("#imgfile").replaceWith($("#imgfile").val('').clone(true));

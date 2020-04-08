@@ -246,7 +246,7 @@
               str += "          <span>"+duration+"</span> by <a>"+encoder+"</a>";
               str += "       </div>";
               str += "      <p class=\"excerpt\">"+description.substring(0, 300);+"";
-              str += "    ...<a href=#>Read&nbsp;More</a></p></div>";
+              str += "    ...<a href=\"#\" data-toggle=\"modal\" data-target=\"#previewGrievModal\" id=\"viewGriev\" ctrlno=\""+id+"\">read&nbsp;more</a></p></div>";
               str += "  </div>";
               str += "</li>";                
 

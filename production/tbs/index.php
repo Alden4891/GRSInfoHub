@@ -25,17 +25,9 @@ if ($optionBarangay != -1) {
 }
 
 
-if ($optionReportType == 'imt_es')       include 'imt_es.php';
-if ($optionReportType == 'imt_sa')       include 'imt_sa.php';
-if ($optionReportType == 'imt_internal') include 'imt_int.php';
-if ($optionReportType == 'imt_external1') include 'imt_ext1.php';
-if ($optionReportType == 'imt_external2') include 'imt_ext2.php';
-
-if ($optionReportType == 'imt_es_ml')       include 'imt_es_ml.php';
-if ($optionReportType == 'imt_sa_ml')       include 'imt_sa_ml.php';
-if ($optionReportType == 'imt_internal_ml') include 'imt_int_ml.php';
-if ($optionReportType == 'imt_external1_ml') include 'imt_ext1_ml.php';
-if ($optionReportType == 'imt_external2_ml') include 'imt_ext2_ml.php';
+if ($optionReportType == 'grs_r1')       include 'grs_r1.php';
+if ($optionReportType == 'grs_r2')       include 'grs_r2.php';
+if ($optionReportType == 'grs_r3') 		 include 'grs_r3.php';
 
 
 ?>

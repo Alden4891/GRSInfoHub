@@ -67,14 +67,14 @@
                         <div class="col-md-9 col-sm-9 ">
                           <select class="select2_group form-control" id=optionReportType name="optionReportType">
                             <optgroup label="Masterlists">
-                              <option value="imt_es">List of captured grievances</option>
-                              <option value="imt_es">List of ongoing grievances</option>
-                              <option value="imt_es">List of resolved grievances</option>
+                              <option value="grs_r1">List of captured grievances</option>
+                              <option value="grs_r2" disabled="true">List of ongoing grievances</option>
+                              <option value="grs_r3" disabled="true">List of resolved grievances</option>
                               <!-- <option value="imt_es_ml">Masterlist of Intervention Provided</option> -->
                             </optgroup>
 
                             <optgroup label="Pivot">
-                              <option value="imt_sa">Summary of grievances by classification</option>
+                              <option value="grs_pr1" disabled="true">Summary of grievances by classification</option>
                               <!-- <option value="imt_sa_ml">Masterlist of Intervention Provided</option> -->
                             </optgroup>
 
@@ -177,8 +177,8 @@ $(document).ready(function(e) {
             url: './proc/getComboData.php',
             data: {
                 tableName: "lib_psgc",
-                valueMember: "DISTINCT `BARANGAY NAME`",
-                displayMember: "`BARANGAY NAME`",
+                valueMember: "DISTINCT `BARANGAY`",
+                displayMember: "`BARANGAY`",
                 condition: "MUNICIPALITY = '" + value + "'",
             },
             success: function(response) {

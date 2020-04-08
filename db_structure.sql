@@ -54,7 +54,7 @@ CREATE TABLE `grievances` (
   `Remarks` text COLLATE ascii_bin DEFAULT NULL,
   `uid` varchar(50) COLLATE ascii_bin DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
 
 /*Table structure for table `images` */
 
@@ -118,7 +118,7 @@ CREATE TABLE `lib_psgc` (
   `REGION` varchar(255) DEFAULT NULL,
   `PROVINCE` varchar(255) DEFAULT NULL,
   `MUNICIPALITY` varchar(255) DEFAULT NULL,
-  `BARANGAY NAME` varchar(255) DEFAULT NULL,
+  `BARANGAY` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`PSGC`)
 ) ENGINE=InnoDB AUTO_INCREMENT=153617144 DEFAULT CHARSET=utf8;
 

@@ -13,7 +13,7 @@ $res = mysqli_query($con, "
             , `lib_psgc`.`REGION`
             , `lib_psgc`.`PROVINCE`
             , `lib_psgc`.`MUNICIPALITY`
-            , `lib_psgc`.`BARANGAY NAME`
+            , `lib_psgc`.`BARANGAY`
             , `grievances`.`ADDRESS`
             , `grievances`.`CONTACTNO`
             , `grievances`.`EMAIL`
@@ -64,7 +64,7 @@ $res = mysqli_query($con, "
 			$region=$r['REGION'];
 			$province=$r['PROVINCE'];
 			$municipality=$r['MUNICIPALITY'];
-			$barangayname=$r['BARANGAY NAME'];
+			$barangayname=$r['BARANGAY'];
 			$address=$r['ADDRESS'];
 			$contactno=$r['CONTACTNO'];
 			$email=$r['EMAIL'];

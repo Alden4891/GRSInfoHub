@@ -29,7 +29,8 @@
          <a href="#" class="btn btn-primary btn-md active" role="button" aria-pressed="true" psgc="" ctrlno=0 id="btn_interv_list_editor_open" data-toggle="modal" data-target="#interv_list_editor_modal">New Grievance</a> 
     </div>
 
-  </div>            <span>sadasd</span>
+  </div>   
+           <span></span>
             <table id="datatable-buttons" class="table table-striped table-bordered" style="width:100%">
                 <thead>
                     <tr>
@@ -64,7 +65,7 @@
                                 , `lib_psgc`.`REGION`
                                 , `lib_psgc`.`PROVINCE`
                                 , `lib_psgc`.`MUNICIPALITY`
-                                , `lib_psgc`.`BARANGAY NAME`
+                                , `lib_psgc`.`BARANGAY`
                                 , `grievances`.`CONTACTNO`
                                 , `grievances`.`EMAIL`
                                 , `lib_grssubtype`.subtype
@@ -104,11 +105,11 @@
                                 $region=$r['REGION'];
                                 $province=$r['PROVINCE'];
                                 $municipality=$r['MUNICIPALITY'];
-                                $barangayname=$r['BARANGAY NAME'];
+                                $barangayname=$r['BARANGAY'];
                                 $contactno=$r['CONTACTNO'];
                                 $email=$r['EMAIL'];
                                 $grs_subtype=$r['subtype'];
-                                $description=substr(Strip_tags($r['DESCRIPTION']), 0,200)."... <a href=\"#\">Read more</a>";
+                                $description=substr(Strip_tags($r['DESCRIPTION']), 0,200)."... <a href=\"#\" data-toggle=\"modal\" data-target=\"#previewGrievModal\" id=\"viewGriev\" ctrlno=\"$ctrlno\">read more</a>";
                                 $eoob=$r['EOOB'];
                                 $date_reported=$r['DATE_REPORTED'];
                                 $source=$r['source'];
@@ -173,7 +174,7 @@
 </div>
 
 <script>
-    //submit interv editor
+    //submit interv editor 
     $(document).on('click', "#btnSubmitGrievamce", function(e) {
         e.preventDefault();
         if (confirm('You are about to save the changes you made. Do you want to continue?')) {
@@ -275,6 +276,7 @@
                         console.log(response);
                          if (response.indexOf("**success**") > -1){   
                                 notification_show("Saved",1);
+                                $('#btnSubmitGrievamce').attr('disabled',true);
                          }else if (response.indexOf("**no-changes**") > -1) {
                                  notification_show("No changes made!",0);
                          }
@@ -345,7 +347,7 @@
         var ctrlno = $(this).attr('ctrlno');
         var psgc = $(this).attr('psgc');
        
-
+         $('#btnSubmitGrievamce').attr('disabled',false);
 
         if (psgc > 0) {
             //* LOAD DATA ENTRY FOR EDITING
@@ -396,7 +398,7 @@
                 data: {
                     tableName: "lib_psgc",
                     valueMember: "DISTINCT LEFT(PSGC,9)",
-                    displayMember: "`BARANGAY NAME`",
+                    displayMember: "`BARANGAY`",
                     condition: "LEFT(PSGC,6) = '"+psgc_muni+"' ORDER BY 2",
                     selected: psgc_brgy,
                 },
@@ -429,7 +431,7 @@
                         r[6] = `REGION`
                         r[7] = `PROVINCE`
                         r[8] = `MUNICIPALITY`
-                        r[9] = `BARANGAY NAME`
+                        r[9] = `BARANGAY`
                         r[10] = `CONTACTNO`
                         r[11] = `EMAIL`
                         r[12] = `grs_type`
@@ -756,7 +758,7 @@
                 data: {
                     tableName: "lib_psgc",
                     valueMember: "DISTINCT LEFT(PSGC,9)",
-                    displayMember: "`BARANGAY NAME`",
+                    displayMember: "`BARANGAY`",
                     condition: "LEFT(PSGC,6) = '"+value+"' ORDER BY 2",
                     selected: '',
                 },
@@ -1143,14 +1145,24 @@
                       </div>
 
 
-                    <div class="form-group">
-                        <button name="submit" type="submit" class="btn btn-primary" id=btnSubmitGrievamce name=btnSubmitGrievamce>Save</button>
-                    </div>
+                            <!--  <div class="form-group">
+                                                    <button  name="submit" type="submit" class="btn btn-primary" id=btnSubmitGrievamce name=btnSubmitGrievamce>Save</button>
+                                                </div>
+                             -->
 
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="col-sm">
+                                    <p class="text-muted font-13 m-b-30">
+                                       
+                                    </p>
+                            </div>
+                            <div class="">
+                                 <button  name="submit" type="submit" class="btn btn-primary" id=btnSubmitGrievamce name=btnSubmitGrievamce><i class="fa fa-home"></i>&nbsp;SAVE&nbsp;</button> &nbsp;&nbsp;&nbsp;
+                            </div>
 
-
-
-
+                          </div> 
+                        </div>
                     </form>
                 </div>
             </div>
