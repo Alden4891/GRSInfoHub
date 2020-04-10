@@ -90,7 +90,9 @@
                                 INNER JOIN `db_grs`.`lib_eoob` 
                                     ON (`lib_eoob`.id = `grievances`.EOOB)
                                 INNER JOIN `db_grs`.`lib_status` 
-                                    ON (`lib_status`.`id` = `grievances`.`STATUS`);
+                                    ON (`lib_status`.`id` = `grievances`.`STATUS`)
+                                order by  `grievances`.`DATE_REPORTED` desc
+                                ;
 
                              ") or die(mysqli_error());
                             while ($r=mysqli_fetch_array($res_intvlist,MYSQLI_ASSOC)) {
@@ -144,9 +146,19 @@
                                   $lapse = ' just now ';
                                 }
 
+                                //lightgreen
+                                //lightyellow
+                                //
+
+                                $trstyle = "white";
+                                if ($status == "Ongoing"){
+                                    $trstyle = "lightyellow";
+                                }else if($status == "Close"){
+                                    $trstyle = "lightblue";
+                                }
 
                                 echo "
-                                    <tr class=\"\">
+                                    <tr class=\"\" style=\"background-color: $trstyle;\">
                                         <td class=\"even gradeC\"> $ctrlno</td>
                                         <td>$description</td>
                                         <td>$date_reported</td>
@@ -160,7 +172,7 @@
                                               <span class=\"glyphicon glyphicon-list\" aria-hidden=\"true\"></span>
                                             </button>
                                         </td>
-                                </tr>
+                                    </tr>
 
                                 ";
 
