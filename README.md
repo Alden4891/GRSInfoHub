@@ -1,5 +1,5 @@
-# Intervention Monitoring System
+# Offline GRS System (OGRS)
 
-This system is a offline-based application designed to track-down interventions provided by the Department of Social Welfare and Development Field Office XII, other Govenement Agencies, LGUs, and NGOs/CSOs on the poor households under Pantawid Pamilyang Pilipino Program. 
+The Offline GRS System (OGRS) aims to capture and resolve grievances effectively and expeditiously in a transparent manner.  It is intended to provide a venue for beneficiaries and the public at large to air their concerns, complaints and suggestions to improve the program. Their queries and complaints will be responded appropriately.
 
 
