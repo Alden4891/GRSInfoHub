@@ -1,6 +1,6 @@
 <?php  
 include '../dbconnect.php';
-$ctrlno 		=  (isset($_REQUEST['ctrlno'])?$_REQUEST['ctrlno']:0); 
+$guid 		=  (isset($_REQUEST['guid'])?$_REQUEST['guid']:0); 
 
 $res = mysqli_query($con, "
           SELECT
@@ -47,7 +47,7 @@ $res = mysqli_query($con, "
                 ON (`grievances`.`GRS_SOURCE` = `lib_grssource`.`id`)
             INNER JOIN `db_grs`.`lib_status` 
                 ON (`lib_status`.`id` = `grievances`.`STATUS`)
-        WHERE (`grievances`.`id` = $ctrlno)
+        WHERE (`grievances`.`uid` = '$guid')
         ;
 
 ") OR die (MYSQLI_ERROR());

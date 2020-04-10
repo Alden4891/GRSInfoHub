@@ -32,10 +32,12 @@ for($index = 0;$index < $countfiles;$index++){
    $exists_count = 0;
    if(in_array($ext, $valid_ext)){
         
-        $data = decode_arr(file_get_contents($_FILES['files']['tmp_name'][$index]));
-        $arr_data = explode(",",$data);
-        $file = $arr_data[0];
-        $attachments = $arr_data[1];
+        //$data = decode_arr(file_get_contents($_FILES['files']['tmp_name'][$index]));
+        $data = file_get_contents($_FILES['files']['tmp_name'][$index]);
+        $arr_data = explode("|",$data);
+
+        $file = decode_arr($arr_data[0]);
+        $attachments = decode_arr($arr_data[1]);
 
 
         foreach ($file as $value) {
@@ -64,10 +66,33 @@ for($index = 0;$index < $countfiles;$index++){
 
         
 
-            $data = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS isEXISTS FROM grievances WHERE uid = '$uid';"));
-            if ($data['isEXISTS']==0){
+            $data_attachments = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS isEXISTS FROM grievances WHERE uid = '$uid';"));
+            if ($data_attachments['isEXISTS']==0){
                 $sql = "INSERT INTO `db_grs`.`grievances`(`id`,`FIRSTNAME`,`MIDDLENAME`,`LASTNAME`,`EXT`,`PSGC`,`ADDRESS`,`CONTACTNO`,`EMAIL`,`GRS_TYPE`,`DESCRIPTION`,`EOOB`,`DATE_REPORTED`,`GRS_SOURCE`,`STATUS`,`DATE_SUBMITTED`,`DATE_RESOLVED`,`ENCODED_BY`,`DATE_ENCODED`,`Remarks`,`uid`) 
-    VALUES ( NULL,'$firstname','$middlename','$lastname','$ext','$psgc','$address','$contactno','$email','$grs_type','$description','$eoob','$date_reported','$grs_source','$status','$date_submitted','$date_resolved','$encoded_by',now(),'$remarks','$uid');";
+                VALUES ( 
+                   NULL
+                  ,'$firstname'
+                  ,'$middlename'
+                  ,'$lastname'
+                  ,'$ext'
+                  ,'$psgc'
+                  ,'$address'
+                  ,'$contactno'
+                  ,'$email'
+                  ,'$grs_type'
+                  ,'$description'
+                  ,'$eoob'
+                  ,'$date_reported'
+                  ,'$grs_source'
+                  ,'$status'
+                  ,'$date_submitted'
+                  ,'$date_resolved'
+                  ,'$encoded_by'
+                  , now()
+                  ,'$remarks'
+                  ,'$uid'
+                );";
+
                 
                 mysqli_query($con,$sql) or die('**error**');
                 $success_count++;
@@ -75,14 +100,21 @@ for($index = 0;$index < $countfiles;$index++){
                 $exists_count++;
             }
         }
-
          foreach ($attachments as $value) {
-            $binary = $value[1];
+            
+            $binary = addslashes($value[1]);
             $filename = $value[2];
             $size   = $value[3];
-            $ext = $value[4];
+            $mime = $value[4];
+            $uid = $value[5];
+            $guid = $value[6];
 
-            insert binary data here*** im here
+            $data_attachments = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS isEXISTS FROM attachments WHERE uid = '$uid';"));
+            if ($data_attachments['isEXISTS']==0){
+              mysqli_query($con,"
+                INSERT INTO attachments (`data`,`filename`,`size`,`mime`,`uid`,`guid`) 
+                values ('{$binary}','$filename','$size','$mime','$uid','$guid');");
+            }
          }
    }
 

@@ -1,6 +1,9 @@
 <?php
+
+    include 'dbconnect.php';
+
+$guid = "sample_uuid1";
 $countfiles = count($_FILES['files']['name']);
-$upload_location = "uploads/";
 $files_arr = array();
 
 for($index = 0;$index < $countfiles;$index++){
@@ -8,11 +11,20 @@ for($index = 0;$index < $countfiles;$index++){
    $ext = pathinfo($filename, PATHINFO_EXTENSION);
    $path = $filename;
    $size = filesize($_FILES['files']['tmp_name'][$index]);
-   $file = addslashes(file_get_contents($_FILES['files']['tmp_name'][$index]));
+   $binary = addslashes(file_get_contents($_FILES['files']['tmp_name'][$index]));
+   $mime = mime_content_type($_FILES['files']['tmp_name'][$index]);
+   $uid = uniqid();
+   $sql = "
+      INSERT INTO attachments (`data`,`filename`,`size`,`mime`,`uid`,`guid`) 
+      values ('{$binary}','$filename','{$size}','$mime','$uid','$guid');
+   ";
 
-   //mysqli_query($con,"UPDATE users SET picture = '{$image}', picture_size='{$size[3]}', picture_type='{$size['mime']}' WHERE user_id = $user_id");
+   echo "$filename | $ext | $size | $mime ";
+   //mysqli_query($con,"$sql") or die(mysqli_error($con));
 
-echo "$file | $ext | $size <br>";
+   // mysqli_query($con,"UPDATE users SET picture = '{$image}', picture_size='{$size[3]}', picture_type='{$size['mime']}' WHERE user_id = $user_id");
+
+   // echo "$binary | $mime | $size | $filename<br>";
    // Valid image extension
  //  $valid_ext = array("png","jpeg","jpg");
 
@@ -28,6 +40,7 @@ echo "$file | $ext | $size <br>";
   // }
 
 }
+          include 'dbclose.php';
 
 //echo json_encode($files_arr);
 die;

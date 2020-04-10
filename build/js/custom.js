@@ -1586,13 +1586,16 @@ if (typeof NProgress != 'undefined') {
 			var optionSet1 = {
 			  startDate: moment().subtract(29, 'days'),
 			  endDate: moment(),
-			  minDate: '01/01/2012',
-			  maxDate: '12/31/2015',
+			  minDate: '01/01/2019',
+			  maxDate: '12/31/2025',
 			  dateLimit: {
-				days: 60
+				days: 3000
 			  },
 			  showDropdowns: true,
-			  showWeekNumbers: true,
+			    "maxSpan": {
+			        "days": 7
+			    },
+    		  showWeekNumbers: true,
 			  timePicker: false,
 			  timePickerIncrement: 1,
 			  timePicker12Hour: true,
@@ -1630,9 +1633,11 @@ if (typeof NProgress != 'undefined') {
 			$('#reportrange').on('hide.daterangepicker', function() {
 			  console.log("hide event fired");
 			});
-			$('#reportrange').on('apply.daterangepicker', function(ev, picker) {
-			  console.log("apply event fired, start/end dates are " + picker.startDate.format('MMMM D, YYYY') + " to " + picker.endDate.format('MMMM D, YYYY'));
-			});
+			
+			// $('#reportrange').on('apply.daterangepicker', function(ev, picker) {
+			//   console.log("Apply event fired, start/end dates are " + picker.startDate.format('MMMM D, YYYY') + " to " + picker.endDate.format('MMMM D, YYYY'));
+			// });
+
 			$('#reportrange').on('cancel.daterangepicker', function(ev, picker) {
 			  console.log("cancel event fired");
 			});
@@ -1661,12 +1666,15 @@ if (typeof NProgress != 'undefined') {
 				var optionSet1 = {
 				  startDate: moment().subtract(29, 'days'),
 				  endDate: moment(),
-				  minDate: '01/01/2012',
-				  maxDate: '12/31/2020',
+				  minDate: '01/01/2019',
+				  maxDate: '12/31/2025',
 				  dateLimit: {
-					days: 60
+					days: 3000
 				  },
 				  showDropdowns: true,
+			    "maxSpan": {
+			        "days": 7
+			    },
 				  showWeekNumbers: true,
 				  timePicker: false,
 				  timePickerIncrement: 1,
@@ -1710,6 +1718,7 @@ if (typeof NProgress != 'undefined') {
 				$('#reportrange_right').on('apply.daterangepicker', function(ev, picker) {
 				  console.log("apply event fired, start/end dates are " + picker.startDate.format('MMMM D, YYYY') + " to " + picker.endDate.format('MMMM D, YYYY'));
 				});
+
 				$('#reportrange_right').on('cancel.daterangepicker', function(ev, picker) {
 				  console.log("cancel event fired");
 				});
