@@ -50,8 +50,8 @@
 
     <title>DSWD XII | Offline GRS System</title>
 
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
-
+    <!-- <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script> -->
+    <script type="text/javascript" src="../vendors/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -126,113 +126,23 @@
                 <ul class="nav side-menu">
                   <li><a href="?page=dashboard"><i class="fa fa-dashboard"></i> DASHBAORD</span></a></li>
                   <li><a href="?page=grievances"><i class="fa fa-child"></i> GRIEVANCES</span></a></li>
-<!--                   <li><a href="?page=importdata"><i class="fa fa-upload"></i> IMPORT DATA</span></a></li>
-                  <li><a href="?page=exportdata"><i class="fa fa-download"></i> EXPORT DATA</span></a></li>
- -->
                    <li><a><i class="fa fa-exchange"></i> IMPORT/EXPORT <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="?page=importdata">IMPORT DATA</a></li>
                       <li><a href="?page=exportdata">EXPORT DATA</a></li>
                     </ul>
                   </li>
-<!--                    <li><a><i class="fa fa-database"></i> DATABASE <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="?page=importroster">HOUSEHOLD ROSTER</a></li>
-                      <li><a href="?page=importswdi">SWDI SCORES</a></li>
-                    </ul>
-                  </li> -->
+
 
                   <li><a href="?page=reports"><i class="fa fa-area-chart"></i> REPORTS</span></a></li>
                   <li><a href="?page=debug"><i class="fa fa-flash"></i> DEBUGGER</span></a></li>
 
 
-<!--                   <li><a><i class="fa fa-edit"></i> Forms <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="form.html">General Form</a></li>
-                      <li><a href="form_advanced.html">Advanced Components</a></li>
-                      <li><a href="form_validation.html">Form Validation</a></li>
-                      <li><a href="form_wizards.html">Form Wizard</a></li>
-                      <li><a href="form_upload.html">Form Upload</a></li>
-                      <li><a href="form_buttons.html">Form Buttons</a></li>
-                    </ul>
-                  </li>
-                  <li><a><i class="fa fa-desktop"></i> UI Elements <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="general_elements.html">General Elements</a></li>
-                      <li><a href="media_gallery.html">Media Gallery</a></li>
-                      <li><a href="typography.html">Typography</a></li>
-                      <li><a href="icons.html">Icons</a></li>
-                      <li><a href="glyphicons.html">Glyphicons</a></li>
-                      <li><a href="widgets.html">Widgets</a></li>
-                      <li><a href="invoice.html">Invoice</a></li>
-                      <li><a href="inbox.html">Inbox</a></li>
-                      <li><a href="calendar.html">Calendar</a></li>
-                    </ul>
-                  </li>
-                  <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="tables.html">Tables</a></li>
-                      <li><a href="tables_dynamic.html">Table Dynamic</a></li>
-                    </ul>
-                  </li>
-                  <li><a><i class="fa fa-bar-chart-o"></i> Data Presentation <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="chartjs.html">Chart JS</a></li>
-                      <li><a href="chartjs2.html">Chart JS2</a></li>
-                      <li><a href="morisjs.html">Moris JS</a></li>
-                      <li><a href="echarts.html">ECharts</a></li>
-                      <li><a href="other_charts.html">Other Charts</a></li>
-                    </ul>
-                  </li>
-                  <li><a><i class="fa fa-clone"></i>Layouts <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="fixed_sidebar.html">Fixed Sidebar</a></li>
-                      <li><a href="fixed_footer.html">Fixed Footer</a></li>
-                    </ul>
-                  </li> -->
+
                 </ul>
               </div>
               <div class="menu_section">
-                <!--h3>Live On</h3>
-                <ul class="nav side-menu">
-                  <li><a><i class="fa fa-bug"></i> Additional Pages <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="e_commerce.html">E-commerce</a></li>
-                      <li><a href="projects.html">Projects</a></li>
-                      <li><a href="project_detail.html">Project Detail</a></li>
-                      <li><a href="contacts.html">Contacts</a></li>
-                      <li><a href="profile.html">Profile</a></li>
-                    </ul>
-                  </li>
-                  <li><a><i class="fa fa-windows"></i> Extras <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="page_403.html">403 Error</a></li>
-                      <li><a href="page_404.html">404 Error</a></li>
-                      <li><a href="page_500.html">500 Error</a></li>
-                      <li><a href="plain_page.html">Plain Page</a></li>
-                      <li><a href="login.html">Login Page</a></li>
-                      <li><a href="pricing_tables.html">Pricing Tables</a></li>
-                    </ul>
-                  </li>
-                  <li><a><i class="fa fa-sitemap"></i> Multilevel Menu <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                        <li><a href="#level1_1">Level One</a>
-                        <li><a>Level One<span class="fa fa-chevron-down"></span></a>
-                          <ul class="nav child_menu">
-                            <li class="sub_menu"><a href="level2.html">Level Two</a>
-                            </li>
-                            <li><a href="#level2_1">Level Two</a>
-                            </li>
-                            <li><a href="#level2_2">Level Two</a>
-                            </li>
-                          </ul>
-                        </li>
-                        <li><a href="#level1_2">Level One</a>
-                        </li>
-                    </ul>
-                  </li>                  
-                  
-                </ul-->
+
               </div>
 
             </div>
@@ -283,79 +193,7 @@
                   </div>
                 </li>
 
-                <!--li role="presentation" class="nav-item dropdown open">
-                  <a href="javascript:;" class="dropdown-toggle info-number" id="navbarDropdown1" data-toggle="dropdown" aria-expanded="false">
-                    <i class="fa fa-envelope-o"></i>
-                    <span class="badge bg-green">6</span>
-                  </a>
-                  <ul class="dropdown-menu list-unstyled msg_list" role="menu" aria-labelledby="navbarDropdown1">
-                    <li class="nav-item">
-                      <a class="dropdown-item">
-                        <span class="image">
-                          <img src="image.php?user_id=<?=$user_id?>" alt="..." class="">
-                        </span>
-                        
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="dropdown-item">
-                        <span class="image">
-                          <img src="image.php?user_id=<?=$user_id?>" alt="..." class="">
-                        </span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="dropdown-item">
-                        <span class="image">
-                          <img src="image.php?user_id=<?=$user_id?>" alt="..." class="">
-                        </span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="dropdown-item">
-                        <span class="image">
-                          <img src="image.php?user_id=<?=$user_id?>" alt="..." class="">
-                        </span>
-                        <span>
-                          <span>John Smith</span>
-                          <span class="time">3 mins ago</span>
-                        </span>
-                        <span class="message">
-                          Film festivals used to be do-or-die moments for movie makers. They were where...
-                        </span>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <div class="text-center">
-                        <a class="dropdown-item">
-                          <strong>See All Alerts</strong>
-                          <i class="fa fa-angle-right"></i>
-                        </a>
-                      </div>
-                    </li>
-                  </ul>
-                </li-->
+
               </ul>
             </nav>
           </div>
@@ -405,9 +243,16 @@
 
         <!-- footer content -->
         <footer>
-          <div class="pull-right">
-            Intervention Monitoring System by <a href="http://fo12.dswd.gov.ph" target="_blank">DSWD XII</a>
+          <div class="row">
+            <div class="col-sm">
+              System Developer: <a href="mailto:aaquinones.fo12@dswd.gov.ph">Alden Quinones</a>
+            </div>
+            <div class="pull-right">
+              Offline GRS by <a href="http://fo12.dswd.gov.ph" target="_blank">DSWD XII</a>
+            </div>
+            
           </div>
+
           <div class="clearfix"></div>
         </footer>
         <!-- /footer content -->
@@ -441,13 +286,13 @@ $(document).ready(function (e) {
 //preview interv.
 $(document).on('click','#viewGriev',function(){
 
-    var ctrlno = $(this).attr('ctrlno');
+    var guid = $(this).attr('guid');
  
             $.ajax({
                 type: 'GET',
                 url: './proc/getGrievanceInfo.php',
                 data: {
-                    ctrlno: ctrlno,
+                    guid: guid,
                 },
                 success: function(response) {
                     
@@ -489,7 +334,7 @@ $(document).on('click','#viewGriev',function(){
                              29  grs_subtype_id
                              30  subtype
                     */
-                  $('#previewGrievModalLabel').html('CTRL#' + ctrlno);
+                  $('#previewGrievModalLabel').html('CTRL No.' + arr[0]);
                   $('#previewGrievModalContent').html(arr[13]);
 
                 }
@@ -857,7 +702,7 @@ $('#uploadfile2').on("submit",function (e) {
             <div class="modal-body">
               <div class="row">
                <div class="col-md-12 col-sm-12 col-xs-12">
-                  <b>App Name:</b> DSWD Biometric System <br>
+                  <b>App Name:</b> Offline GRS System <br>
                   <b>Version :</b> 2.0 <br><hr>
                   <b>System Developer :</b> Alden A. Quinones | <a href="mailto:alden.roxy@gmail.com">alden.roxy@gmail.com</a><br>
                   <b>UX/UI Designer  :</b> Roxanne Eve G. Quinones  | <a href="mailto:roxy.guibone@gmail.com">roxy.guibone@gmail.com</a><br>

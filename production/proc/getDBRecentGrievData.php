@@ -10,6 +10,7 @@ SELECT
     , `DESCRIPTION`
     , `ENCODED_BY`
     , `DATE_REPORTED`
+    , `uid`
 FROM
     `db_grs`.`grievances`
 ORDER BY `DATE_REPORTED` DESC
@@ -24,8 +25,9 @@ while($row = mysqli_fetch_array($result)){
     $DESCRIPTION = strip_tags($row['DESCRIPTION']);
     $ENCODED_BY = $row['ENCODED_BY'];
     $DATE_REPORTED = $row['DATE_REPORTED'];
+    $guid = $row['uid'];
 
-    $return_arr[] = array($ID,$DESCRIPTION,$ENCODED_BY,$DATE_REPORTED);
+    $return_arr[] = array($ID,$DESCRIPTION,$ENCODED_BY,$DATE_REPORTED,$guid);
 }
 
 echo json_encode($return_arr);

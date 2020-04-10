@@ -1,37 +1,69 @@
 <?php
 
-$ctrlno=isset($_REQUEST['ctrlno'])?$_REQUEST['ctrlno']:0;
-$firstname=isset($_REQUEST['firstname'])?$_REQUEST['firstname']:'';
-$middlename=isset($_REQUEST['middlename'])?$_REQUEST['middlename']:'';
-$lastname=isset($_REQUEST['lastname'])?$_REQUEST['lastname']:'';
-$ext=isset($_REQUEST['ext'])?$_REQUEST['ext']:'';
-$psgc=isset($_REQUEST['psgc'])?$_REQUEST['psgc']:'';
-$address=isset($_REQUEST['address'])?$_REQUEST['address']:'';
-$contactno=isset($_REQUEST['contactno'])?$_REQUEST['contactno']:'';
-$email=isset($_REQUEST['email'])?$_REQUEST['email']:'';
-$grs_type=isset($_REQUEST['grs_subtype'])?$_REQUEST['grs_subtype']:'';
-$description=isset($_REQUEST['description'])?$_REQUEST['description']:'';
-$eoob=isset($_REQUEST['eoob'])?$_REQUEST['eoob']:'';
-$date_reported=isset($_REQUEST['date_reported'])?$_REQUEST['date_reported']:'';
-$grs_source=isset($_REQUEST['grs_source'])?$_REQUEST['grs_source']:'';
-$status=isset($_REQUEST['status'])?$_REQUEST['status']:'';
-$date_submitted=isset($_REQUEST['date_submitted'])?$_REQUEST['date_submitted']:'';
-$date_resolved=isset($_REQUEST['date_resolved'])?$_REQUEST['date_resolved']:'';
-$encoded_by=isset($_REQUEST['encoded_by'])?$_REQUEST['encoded_by']:'';
-$date_encoded=isset($_REQUEST['date_encoded'])?$_REQUEST['date_encoded']:'';
-$remarks=isset($_REQUEST['remarks'])?$_REQUEST['remarks']:'';
-$uuid=isset($_REQUEST['uuid'])?$_REQUEST['uuid']:'';
+$ctrlno=isset($_REQUEST['hid_ctrlno'])?$_REQUEST['hid_ctrlno']:0;
+$firstname=isset($_REQUEST['txtEdFirstName'])?$_REQUEST['txtEdFirstName']:'';
+$middlename=isset($_REQUEST['txtEdMiddleName'])?$_REQUEST['txtEdMiddleName']:'';
+$lastname=isset($_REQUEST['txtEdLastName'])?$_REQUEST['txtEdLastName']:'';
+$ext=isset($_REQUEST['txtEdExt'])?$_REQUEST['txtEdExt']:'';
+$psgc=isset($_REQUEST['cmbEdBarangay'])?$_REQUEST['cmbEdBarangay']:'';
+$address=isset($_REQUEST['txtEdAddress'])?$_REQUEST['txtEdAddress']:'';
+$contactno=isset($_REQUEST['txtEdContactNo'])?$_REQUEST['txtEdContactNo']:'';
+$email=isset($_REQUEST['txtEdEmail'])?$_REQUEST['txtEdEmail']:'';
+$grs_type=isset($_REQUEST['cmbEdGRSSubtype'])?$_REQUEST['cmbEdGRSSubtype']:'';
+$description=isset($_REQUEST['hid_description'])?$_REQUEST['hid_description']:'';
+$eoob=isset($_REQUEST['cmbEdEODB'])?$_REQUEST['cmbEdEODB']:'';
+$date_reported=isset($_REQUEST['dtDateReported'])?$_REQUEST['dtDateReported']:'';
+$grs_source=isset($_REQUEST['cmbEdSource'])?$_REQUEST['cmbEdSource']:'';
+$status=isset($_REQUEST['cmbEdStatus'])?$_REQUEST['cmbEdStatus']:'';
+$date_submitted=isset($_REQUEST['hid_date_submitted'])?$_REQUEST['hid_date_submitted']:'';
+$date_resolved=isset($_REQUEST['hid_date_resolved'])?$_REQUEST['hid_date_resolved']:'';
+$encoded_by=isset($_REQUEST['hid_encoded_by'])?$_REQUEST['hid_encoded_by']:'';
+$date_encoded=isset($_REQUEST['hid_date_encoded'])?$_REQUEST['hid_date_encoded']:'';
+$remarks=isset($_REQUEST['txtEdRemarks'])?$_REQUEST['txtEdRemarks']:'';
+$uuid=isset($_REQUEST['hid_uuid'])?$_REQUEST['hid_uuid']:'';
+$new_guid = "";
 
 	include '../dbconnect.php';
 	
 	if ($uuid==''){
+		$uuid = uniqid();
 		$encoded_by  = isset($_REQUEST['user_fullname'])?$_REQUEST['user_fullname']:'Anonymous';
 		//insert
 		//INSERT INTO `db_grs`.`grievances`(`id`,`FIRSTNAME`,`MIDDLENAME`,`LASTNAME`,`EXT`,`PSGC`,`ADDRESS`,`CONTACTNO`,`EMAIL`,`GRS_TYPE`,`DESCRIPTION`,`EOOB`,`DATE_REPORTED`,`GRS_SOURCE`,`STATUS`,`DATE_SUBMITTED`,`DATE_RESOLVED`,`ENCODED_BY`,`DATE_ENCODED`,`Remarks`) VALUES ( NULL,'JOSE','P','RIZAL',NULL,'126306015','AAAAAAA','09468841123','asdas.gooogle.com','1','dasaadadasdasd','1','2020-04-07','1','1',NULL,NULL,'1','2020-04-07','okok!');
 		$sql = "INSERT INTO `db_grs`.`grievances`(`id`,`FIRSTNAME`,`MIDDLENAME`,`LASTNAME`,`EXT`,`PSGC`,`ADDRESS`,`CONTACTNO`,`EMAIL`,`GRS_TYPE`,`DESCRIPTION`,`EOOB`,`DATE_REPORTED`,`GRS_SOURCE`,`STATUS`,`DATE_SUBMITTED`,`DATE_RESOLVED`,`ENCODED_BY`,`DATE_ENCODED`,`Remarks`,`uid`) 
-		VALUES ( NULL,'$firstname','$middlename','$lastname','$ext','$psgc','$address','$contactno','$email','$grs_type','$description','$eoob','$date_reported','$grs_source','$status','$date_submitted','$date_resolved','$encoded_by',now(),'$remarks',uuid());";
+		VALUES ( NULL,'$firstname','$middlename','$lastname','$ext','$psgc','$address','$contactno','$email','$grs_type','$description','$eoob','$date_reported','$grs_source','$status','$date_submitted','$date_resolved','$encoded_by',now(),'$remarks','$uuid');";
+
+		echo "[$description]";
 
     	mysqli_query($con, $sql);
+    	$new_id = mysqli_insert_id($con);
+    	$res_uid = mysqli_fetch_assoc(mysqli_query($con, "SELECT uid FROM grievances WHERE id = $new_id"));
+        $new_guid = $res_uid['uid'];
+
+        //echo "files_count: ".empty($_FILES['files']);
+
+        if (!empty($_FILES['files'])){
+			$guid = $new_guid;
+			$countfiles = count($_FILES['files']['name']);
+			$files_arr = array();
+
+			for($index = 0;$index < $countfiles;$index++){
+			   $filename = $_FILES['files']['name'][$index];
+			   $ext = pathinfo($filename, PATHINFO_EXTENSION);
+			   $path = $filename;
+			   $size = filesize($_FILES['files']['tmp_name'][$index]);
+			   $binary = addslashes(file_get_contents($_FILES['files']['tmp_name'][$index]));
+			   $mime = mime_content_type($_FILES['files']['tmp_name'][$index]);
+			   $uid = uniqid();
+			   $sql_attachments = "
+			      INSERT INTO attachments (`data`,`filename`,`size`,`mime`,`uid`,`guid`) 
+			      values ('{$binary}','$filename','{$size}','$mime','$uid','$guid');
+			   ";
+			   mysqli_query($con,"$sql_attachments") or die(mysqli_error($con));
+			}
+        }
+
+		
 
 	}else{
 		//update
@@ -57,17 +89,46 @@ $uuid=isset($_REQUEST['uuid'])?$_REQUEST['uuid']:'';
 				date_resolved = '$date_resolved',
 				encoded_by = '$encoded_by',
 				date_encoded = '$date_encoded',
-				remarks = '$remarks',
-				uid = '$uuid'
-			WHERE id = $ctrlno;
+				remarks = '$remarks'
+			WHERE uid = '$uuid';
 
 		";
-		//echo "[sql: $sql]";
     	mysqli_query($con, $sql);  		
+
+		  //   	$new_id = mysqli_insert_id($con);
+		  //   	$res_uid = mysqli_fetch_assoc(mysqli_query($con, "SELECT uid FROM grievances WHERE id = $new_id"));
+		  //       $new_guid = $res_uid['uid'];
+		  //$guid = $new_guid;
+
+		if (!empty($_FILES['files'])){
+			$countfiles = count($_FILES['files']['name']);
+			
+			//initiate upload attachments
+			$files_arr = array();
+			for($index = 0;$index < $countfiles;$index++){
+
+			   $filename = $_FILES['files']['name'][$index];
+			   $ext = pathinfo($filename, PATHINFO_EXTENSION);
+			   $path = $filename;
+			   $size = filesize($_FILES['files']['tmp_name'][$index]);
+			   $binary = addslashes(file_get_contents($_FILES['files']['tmp_name'][$index]));
+			   $mime = mime_content_type($_FILES['files']['tmp_name'][$index]);
+			   $uid = uniqid();
+			   $sql_attachments = "
+			      INSERT INTO attachments (`data`,`filename`,`size`,`mime`,`uid`,`guid`) 
+			      values ('{$binary}','$filename','{$size}','$mime','$uid','$uuid');
+			   ";	
+			   mysqli_query($con,"$sql_attachments") or die(mysqli_error($con));
+			}
+
+		}
+
+
+
 	}
 
 	if (mysqli_affected_rows($con)>0){
-		echo "**success**";
+		echo "**success**|";
 	}else{
 		echo "**no-changes**";
 	}

@@ -212,6 +212,7 @@
               var description   = jsondata[i][1];
               var encoder   = jsondata[i][2];
               var date_reported  = jsondata[i][3];
+              var guid  = jsondata[i][4];
               var date_reported2 = new Date(date_reported);
 
               var today = new Date();
@@ -221,9 +222,9 @@
               var diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
               var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
 
-              console.log(date_reported2);
-              console.log(diffMonths);
-              console.log(today);
+              //console.log(date_reported2);
+              //console.log(diffMonths);
+              //console.log(today);
 
               var duration = "";
               if (diffMonths>0) {
@@ -246,7 +247,7 @@
               str += "          <span>"+duration+"</span> by <a>"+encoder+"</a>";
               str += "       </div>";
               str += "      <p class=\"excerpt\">"+description.substring(0, 300);+"";
-              str += "    ...<a href=\"#\" data-toggle=\"modal\" data-target=\"#previewGrievModal\" id=\"viewGriev\" ctrlno=\""+id+"\">read&nbsp;more</a></p></div>";
+              str += "    ...<a href=\"#\" data-toggle=\"modal\" data-target=\"#previewGrievModal\" id=\"viewGriev\" guid=\""+guid+"\" ctrlno=\""+id+"\">read&nbsp;more</a></p></div>";
               str += "  </div>";
               str += "</li>";                
 
@@ -301,7 +302,7 @@
             enddate: '2020-12-31',
         },
         success: function(response) {
-            console.log(response);
+            //console.log(response);
             var arr_data1 = [];
             var jsondata = JSON.parse(JSON.stringify(response));
 
@@ -334,7 +335,17 @@
     
     if( typeof ($.plot) === 'undefined'){ return; }
     
-    console.log('init_flot_chart');
+  // $('#reportrange').daterangepicker({
+  //     "showDropdowns": true,
+  //     "startDate": "04/03/2020",
+  //     "endDate": "04/09/2020",
+  //     "minDate": "01/01/2019",
+  //     "maxDate": "01/01/2030"
+  // }, function(start, end, label) {
+  //   console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+  // });
+
+
     var chart_plot_01_settings = {
           series: {
             lines: {
@@ -387,27 +398,71 @@
         url: 'proc/getDBGrievActivitiesData.php',
         dataType: 'JSON',
         data: {
-            startdate: '2020-01-01',
-            enddate: '2020-12-31',
+            startdate: '',
+            enddate: '',
         },
         success: function(response) {
+          console.log('res1:'+response);
             var arr_data1 = [];
+            var arr_data2 = [];
             var jsondata = JSON.parse(JSON.stringify(response));
 
              for (var i = 0; i < jsondata.length; i++){
                 var dd_year = jsondata[i][0];;
                 var dd_month = jsondata[i][1];
                 var dd_value = jsondata[i][2];
-
-               
                 arr_data1[i] = [gd(dd_year, dd_month, 28), dd_value];
              }
+
+
              if ($("#chart_plot_01").length){
-                  $.plot( $("#chart_plot_01"), [ arr_data1 ],  chart_plot_01_settings );
+                  $.plot( $("#chart_plot_01"), [ arr_data1,arr_data2 ],  chart_plot_01_settings );
              } 
             
         }
     });
+
+
+      $('#reportrange').on('apply.daterangepicker', function(ev, picker) {
+            var fromDate = picker.startDate.format('YYYY-MM-DD');
+            var toDate = picker.endDate.format('YYYY-MM-DD');
+
+
+            console.log("Apply event fired, start/end dates are " + fromDate + " to " + toDate);
+            
+            //line graph
+            $.ajax({
+                type: 'get',
+                url: 'proc/getDBGrievActivitiesData.php',
+                dataType: 'JSON',
+                data: {
+                    startdate: fromDate,
+                    enddate: toDate,
+                },
+                success: function(response) {
+                  console.log("res2:"+response);
+                    var arr_data1 = [];
+                    var arr_data2 = [];
+
+                    var jsondata = JSON.parse(JSON.stringify(response));
+
+                     for (var i = 0; i < jsondata.length; i++){
+                        var dd_year = jsondata[i][0];;
+                        var dd_month = jsondata[i][1];
+                        var dd_value = jsondata[i][2];
+                        arr_data1[i] = [gd(dd_year, dd_month, 28), dd_value];
+                     }
+
+                     if ($("#chart_plot_01").length){
+                  $.plot( $("#chart_plot_01"), [ arr_data1,arr_data2 ],  chart_plot_01_settings );
+                     } 
+                    
+                }
+            });
+
+            //
+
+      });
 
 
   } 
