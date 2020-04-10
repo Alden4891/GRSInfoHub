@@ -59,7 +59,10 @@ $new_guid = "";
 			      INSERT INTO attachments (`data`,`filename`,`size`,`mime`,`uid`,`guid`) 
 			      values ('{$binary}','$filename','{$size}','$mime','$uid','$guid');
 			   ";
-			   mysqli_query($con,"$sql_attachments") or die(mysqli_error($con));
+			   if ($filename<>""){
+			   	mysqli_query($con,"$sql_attachments") or die(mysqli_error($con));
+			   }
+			   
 			}
         }
 
@@ -118,7 +121,10 @@ $new_guid = "";
 			      INSERT INTO attachments (`data`,`filename`,`size`,`mime`,`uid`,`guid`) 
 			      values ('{$binary}','$filename','{$size}','$mime','$uid','$uuid');
 			   ";	
-			   mysqli_query($con,"$sql_attachments") or die(mysqli_error($con));
+			   if ($filename<>""){
+			   	mysqli_query($con,"$sql_attachments") or die(mysqli_error($con));
+			   }
+			   
 			}
 
 		}

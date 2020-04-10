@@ -497,7 +497,7 @@
                     <table class="table table-striped">
                       <thead>
                         <tr>
-                          <th>#</th>
+                          <th>File ID</th>
                           <th>Filename</th>
                           <th style="width: 100px;">Size</th>
                           <th style="width: 100px;">Options</th>
@@ -850,7 +850,8 @@
         var ctrlno = $(this).attr('ctrlno'); 
 
          $('#btnSubmitGrievamce').attr('disabled',false);
-
+         $('#editors-notification').attr('hidden',true);
+         $('#griev_attachments_container').html('');
         if (psgc > 0) {
             //* LOAD DATA ENTRY FOR EDITING
             var psgc_prov = parseInt(psgc.substring(0, 4));
@@ -1011,7 +1012,7 @@
 
 
                     $('#editor-one').html(arr[13]);
-                    
+          
                     $.ajax({
                         type: 'GET',
                         url: './proc/getComboData.php',
@@ -1020,13 +1021,14 @@
                             valueMember: "id",
                             displayMember: "`eoob`",
                             condition: "1=1",
-                            selected: parseInt(arr[25]),
+                            selected: parseInt(arr[14]),
                         },
                         success: function(response) {
                             //console.log(response);
                             $('#cmbEdEODB').html(response);
                         }
                     });
+
 
                     $('#dtDateReported').val(arr[15]);
 
