@@ -86,10 +86,10 @@ for($index = 0;$index < $countfiles;$index++){
                   ,'$date_reported'
                   ,'$grs_source'
                   ,'$status'
-                  ,'$date_submitted'
+                  , now()
                   ,'$date_resolved'
                   ,'$encoded_by'
-                  , now()
+                  ,'$date_encoded'
                   ,'$remarks'
                   ,'$uid'
                   ,'$docid'
