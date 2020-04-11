@@ -99,28 +99,28 @@
 
                   <div class="col-md-12 col-sm-12 ">
                     <div>
-                      <p>Resolved</p>
+                      <p>On Going</p>
                       <div class="">
                         <div class="progress progress_sm" style="width: 76%;">
-                          <div class="progress-bar bg-green" role="progressbar" aria-valuemin="0" id="dbp_griev_resolved" ></div>
+                          <div class="progress-bar bg-green" role="progressbar" aria-valuemin="0" id="dbp_griev_ongoing" ></div>
                         </div>
                       </div>
                     </div>
                     <div>
-                      <p>Ongoing</p>
+                      <p>Open</p>
                       <div class="">
                         <div class="progress progress_sm" style="width: 76%;">
-                          <div class="progress-bar bg-green" role="progressbar" data-valuemin="0" id="dbp_griev_ongoing"></div>
+                          <div class="progress-bar bg-green" role="progressbar" data-valuemin="0" id="dbp_griev_open"></div>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div class="col-md-12 col-sm-12 ">
                     <div>
-                      <p>Lapsed</p>
+                      <p>Closed</p>
                       <div class="">
                         <div class="progress progress_sm" style="width: 76%;">
-                          <div class="progress-bar bg-green" role="progressbar" data-valuemin="0" id="dbp_griev_lapse"></div>
+                          <div class="progress-bar bg-green" role="progressbar" data-valuemin="0" id="dbp_griev_close"></div>
                         </div>
                       </div>
                     </div>
@@ -277,9 +277,9 @@
                 var id = jsondata[i][0];
                 var comp_desc = jsondata[i][1];
                 var value = jsondata[i][2]/total_griev*100;
-                if (id == 1) $('#dbp_griev_ongoing').css('width',value+'%').attr('data-transitiongoal',value).attr('aria-valuenow',value);
-                if (id == 2) $('#dbp_griev_resolved').css('width',value+'%').attr('data-transitiongoal',value).attr('aria-valuenow',value);
-                if (id == 3) $('#dbp_griev_lapse').css('width',value+'%').attr('data-transitiongoal',value).attr('aria-valuenow',value);
+                if (id == 1) $('#dbp_griev_open').css('width',value+'%').attr('data-transitiongoal',value).attr('aria-valuenow',value);
+                if (id == 2) $('#dbp_griev_ongoing').css('width',value+'%').attr('data-transitiongoal',value).attr('aria-valuenow',value);
+                if (id == 3) $('#dbp_griev_close').css('width',value+'%').attr('data-transitiongoal',value).attr('aria-valuenow',value);
 
              }
              // if ($("#chart_plot_01").length){

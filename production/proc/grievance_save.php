@@ -1,5 +1,6 @@
 <?php
 
+$hid_user_id=isset($_REQUEST['hid_user_id'])?$_REQUEST['hid_user_id']:0;
 $ctrlno=isset($_REQUEST['hid_ctrlno'])?$_REQUEST['hid_ctrlno']:0;
 $firstname=isset($_REQUEST['txtEdFirstName'])?$_REQUEST['txtEdFirstName']:'';
 $middlename=isset($_REQUEST['txtEdMiddleName'])?$_REQUEST['txtEdMiddleName']:'';
@@ -21,17 +22,27 @@ $encoded_by=isset($_REQUEST['hid_encoded_by'])?$_REQUEST['hid_encoded_by']:'';
 $date_encoded=isset($_REQUEST['hid_date_encoded'])?$_REQUEST['hid_date_encoded']:'';
 $remarks=isset($_REQUEST['txtEdRemarks'])?$_REQUEST['txtEdRemarks']:'';
 $uuid=isset($_REQUEST['hid_uuid'])?$_REQUEST['hid_uuid']:'';
-$new_guid = "";
+$new_document_id = "";
 
 	include '../dbconnect.php';
 	
 	if ($uuid==''){
 		$uuid = uniqid();
+
+        $res_id = mysqli_fetch_assoc(mysqli_query($con, "SELECT IFNULL(MAX(id),0)+1 AS new_id FROM grievances;"));
+
+
+        
+        $new_document_id = $psgc.'-'.str_pad($hid_user_id, 4, '0', STR_PAD_LEFT).str_pad($res_id['new_id'], 5, '0', STR_PAD_LEFT);
+
+        
+
+
 		$encoded_by  = isset($_REQUEST['user_fullname'])?$_REQUEST['user_fullname']:'Anonymous';
 		//insert
 		//INSERT INTO `db_grs`.`grievances`(`id`,`FIRSTNAME`,`MIDDLENAME`,`LASTNAME`,`EXT`,`PSGC`,`ADDRESS`,`CONTACTNO`,`EMAIL`,`GRS_TYPE`,`DESCRIPTION`,`EOOB`,`DATE_REPORTED`,`GRS_SOURCE`,`STATUS`,`DATE_SUBMITTED`,`DATE_RESOLVED`,`ENCODED_BY`,`DATE_ENCODED`,`Remarks`) VALUES ( NULL,'JOSE','P','RIZAL',NULL,'126306015','AAAAAAA','09468841123','asdas.gooogle.com','1','dasaadadasdasd','1','2020-04-07','1','1',NULL,NULL,'1','2020-04-07','okok!');
-		$sql = "INSERT INTO `db_grs`.`grievances`(`id`,`FIRSTNAME`,`MIDDLENAME`,`LASTNAME`,`EXT`,`PSGC`,`ADDRESS`,`CONTACTNO`,`EMAIL`,`GRS_TYPE`,`DESCRIPTION`,`EOOB`,`DATE_REPORTED`,`GRS_SOURCE`,`STATUS`,`DATE_SUBMITTED`,`DATE_RESOLVED`,`ENCODED_BY`,`DATE_ENCODED`,`Remarks`,`uid`) 
-		VALUES ( NULL,'$firstname','$middlename','$lastname','$ext','$psgc','$address','$contactno','$email','$grs_type','$description','$eoob','$date_reported','$grs_source','$status','$date_submitted','$date_resolved','$encoded_by',now(),'$remarks','$uuid');";
+		$sql = "INSERT INTO `db_grs`.`grievances`(`id`,`docid`,`FIRSTNAME`,`MIDDLENAME`,`LASTNAME`,`EXT`,`PSGC`,`ADDRESS`,`CONTACTNO`,`EMAIL`,`GRS_TYPE`,`DESCRIPTION`,`EOOB`,`DATE_REPORTED`,`GRS_SOURCE`,`STATUS`,`DATE_SUBMITTED`,`DATE_RESOLVED`,`ENCODED_BY`,`DATE_ENCODED`,`Remarks`,`uid`) 
+		VALUES ( NULL,'$new_document_id','$firstname','$middlename','$lastname','$ext','$psgc','$address','$contactno','$email','$grs_type','$description','$eoob','$date_reported','$grs_source','$status','$date_submitted','$date_resolved','$encoded_by',now(),'$remarks','$uuid');";
 
 		echo "[$description]";
 

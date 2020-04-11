@@ -79,6 +79,7 @@
                                 , `grievances`.`DATE_ENCODED`
                                 , `grievances`.`Remarks`
                                 , `grievances`.`uid`
+                                , `grievances`.`docid`
                             FROM
                                 `db_grs`.`grievances`
                                 INNER JOIN `db_grs`.`lib_psgc` 
@@ -101,6 +102,7 @@
 
                                 $psgc=$r['PSGC'];
                                 $ctrlno=$r['id'];
+                                $docid = $r['docid'];;
                                 $firstname=$r['FIRSTNAME'];
                                 $middlename=$r['MIDDLENAME'];
                                 $lastname=$r['LASTNAME'];
@@ -159,7 +161,7 @@
 
                                 echo "
                                     <tr class=\"\" style=\"background-color: $trstyle;\">
-                                        <td class=\"even gradeC\"> $ctrlno</td>
+                                        <td class=\"even gradeC\"> $docid</td>
                                         <td>$description</td>
                                         <td>$date_reported</td>
                                         <td>$lapse</td>
@@ -168,7 +170,7 @@
                                         <td>$status</td>
                                         <td>
 
-                                            <button type=\"button\" class=\"btn btn-info\" aria-label=\"Left Align\"  data-toggle=\"modal\" data-target=\"#interv_list_editor_modal\" guid=\"$uid\" ctrlno=\"$ctrlno\" id=\"btn_interv_list_editor_open\" psgc=\"$psgc\">
+                                            <button type=\"button\" class=\"btn btn-info\" aria-label=\"Left Align\"  data-toggle=\"modal\" data-target=\"#interv_list_editor_modal\" guid=\"$uid\" ctrlno=\"$ctrlno\" docid=\"$docid\" id=\"btn_interv_list_editor_open\" psgc=\"$psgc\">
                                               <span class=\"glyphicon glyphicon-list\" aria-hidden=\"true\"></span>
                                             </button>
                                         </td>
@@ -214,6 +216,7 @@
 
                         <input type="hidden" id="hid_user_fullname" name="hid_user_fullname" value="<?=$user_fullname?>">
                         <input type="hidden" id="hid_ctrlno" name="hid_ctrlno" value="0">
+                        <input type="hidden" id="hid_user_id" name="hid_user_id" value="<?=$user_id?>">
                         <input type="hidden" id="hid_uuid" name="hid_uuid" value="">
                         <input type="hidden" id="hid_date_submitted" name="hid_date_submitted" value="">
                         <input type="hidden" id="hid_date_resolved" name="hid_date_resolved" value="">
@@ -848,6 +851,7 @@
         var psgc = $(this).attr('psgc');
         var guid = $(this).attr('guid'); 
         var ctrlno = $(this).attr('ctrlno'); 
+        var docid = $(this).attr('docid'); 
 
          $('#btnSubmitGrievamce').attr('disabled',false);
          $('#editors-notification').attr('hidden',true);
@@ -862,7 +866,7 @@
             //var date_conducted = new Date($(this).closest('tr').find('td:eq(4)').text());
             var date_conducted = $(this).closest('tr').find('td:eq(4)').text();
 
-            $('#interv_list_editor_modal_label').html('CTRL No.' + ctrlno );
+            $('#interv_list_editor_modal_label').html('CTRL No.' + docid );
             $.ajax({
                 type: 'GET',
                 url: './proc/getComboData.php',

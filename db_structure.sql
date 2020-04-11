@@ -29,7 +29,7 @@ CREATE TABLE `attachments` (
   `uid` varchar(50) COLLATE ascii_bin DEFAULT NULL,
   `guid` varchar(50) COLLATE ascii_bin DEFAULT NULL COMMENT 'Grievance uid',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
 
 /*Table structure for table `grantees` */
 
@@ -68,8 +68,9 @@ CREATE TABLE `grievances` (
   `DATE_ENCODED` datetime DEFAULT NULL,
   `Remarks` text COLLATE ascii_bin DEFAULT NULL,
   `uid` varchar(50) COLLATE ascii_bin DEFAULT NULL,
+  `docid` varchar(50) COLLATE ascii_bin DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
 
 /*Table structure for table `images` */
 

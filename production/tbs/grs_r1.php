@@ -40,6 +40,8 @@ SELECT
     , `lib_grssource`.`source`
     , `grievances`.`DATE_REPORTED`
     , `lib_status`.`status`
+    , `grievances`.`docid`
+
 FROM
     `db_grs`.`grievances`
     INNER JOIN `db_grs`.`lib_psgc` AS `r` 
