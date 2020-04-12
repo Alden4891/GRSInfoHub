@@ -17,7 +17,7 @@ $date_reported=isset($_REQUEST['dtDateReported'])?$_REQUEST['dtDateReported']:''
 $grs_source=isset($_REQUEST['cmbEdSource'])?$_REQUEST['cmbEdSource']:'';
 $status=isset($_REQUEST['cmbEdStatus'])?$_REQUEST['cmbEdStatus']:'';
 $date_submitted=isset($_REQUEST['hid_date_submitted'])?$_REQUEST['hid_date_submitted']:'';
-$date_resolved=isset($_REQUEST['hid_date_resolved'])?$_REQUEST['hid_date_resolved']:'';
+$date_modified=isset($_REQUEST['hid_date_modified'])?$_REQUEST['hid_date_modified']:'';
 $encoded_by=isset($_REQUEST['hid_encoded_by'])?$_REQUEST['hid_encoded_by']:'';
 $date_encoded=isset($_REQUEST['hid_date_encoded'])?$_REQUEST['hid_date_encoded']:'';
 $remarks=isset($_REQUEST['txtEdRemarks'])?$_REQUEST['txtEdRemarks']:'';
@@ -30,19 +30,11 @@ $new_document_id = "";
 		$uuid = uniqid();
 
         $res_id = mysqli_fetch_assoc(mysqli_query($con, "SELECT IFNULL(MAX(id),0)+1 AS new_id FROM grievances;"));
-
-
-        
         $new_document_id = $psgc.'-'.str_pad($hid_user_id, 4, '0', STR_PAD_LEFT).str_pad($res_id['new_id'], 5, '0', STR_PAD_LEFT);
+		$encoded_by  = isset($_REQUEST['hid_user_fullname'])?$_REQUEST['hid_user_fullname']:'Anonymous';
 
-        
-
-
-		$encoded_by  = isset($_REQUEST['user_fullname'])?$_REQUEST['user_fullname']:'Anonymous';
-		//insert
-		//INSERT INTO `db_grs`.`grievances`(`id`,`FIRSTNAME`,`MIDDLENAME`,`LASTNAME`,`EXT`,`PSGC`,`ADDRESS`,`CONTACTNO`,`EMAIL`,`GRS_TYPE`,`DESCRIPTION`,`EOOB`,`DATE_REPORTED`,`GRS_SOURCE`,`STATUS`,`DATE_SUBMITTED`,`DATE_RESOLVED`,`ENCODED_BY`,`DATE_ENCODED`,`Remarks`) VALUES ( NULL,'JOSE','P','RIZAL',NULL,'126306015','AAAAAAA','09468841123','asdas.gooogle.com','1','dasaadadasdasd','1','2020-04-07','1','1',NULL,NULL,'1','2020-04-07','okok!');
-		$sql = "INSERT INTO `db_grs`.`grievances`(`id`,`docid`,`FIRSTNAME`,`MIDDLENAME`,`LASTNAME`,`EXT`,`PSGC`,`ADDRESS`,`CONTACTNO`,`EMAIL`,`GRS_TYPE`,`DESCRIPTION`,`EOOB`,`DATE_REPORTED`,`GRS_SOURCE`,`STATUS`,`DATE_SUBMITTED`,`DATE_RESOLVED`,`ENCODED_BY`,`DATE_ENCODED`,`Remarks`,`uid`) 
-		VALUES ( NULL,'$new_document_id','$firstname','$middlename','$lastname','$ext','$psgc','$address','$contactno','$email','$grs_type','$description','$eoob','$date_reported','$grs_source','$status','$date_submitted','$date_resolved','$encoded_by',now(),'$remarks','$uuid');";
+		$sql = "INSERT INTO `db_grs`.`grievances`(`id`,`docid`,`FIRSTNAME`,`MIDDLENAME`,`LASTNAME`,`EXT`,`PSGC`,`ADDRESS`,`CONTACTNO`,`EMAIL`,`GRS_TYPE`,`DESCRIPTION`,`EOOB`,`DATE_REPORTED`,`GRS_SOURCE`,`STATUS`,`DATE_SUBMITTED`,`DATE_MODIFIED`,`ENCODED_BY`,`DATE_ENCODED`,`Remarks`,`uid`) 
+		VALUES ( NULL,'$new_document_id','$firstname','$middlename','$lastname','$ext','$psgc','$address','$contactno','$email','$grs_type','$description','$eoob','$date_reported','$grs_source','$status','$date_submitted',null,'$encoded_by',now(),'$remarks','$uuid');";
 
 		echo "[$description]";
 
@@ -81,7 +73,7 @@ $new_document_id = "";
 
 	}else{
 		//update
-
+		$modified_by  = isset($_REQUEST['hid_user_fullname'])?$_REQUEST['hid_user_fullname']:'Anonymous';
 		$sql = "
 			UPDATE `db_grs`.`grievances`
 			SET 
@@ -100,7 +92,8 @@ $new_document_id = "";
 				grs_source = '$grs_source',
 				status = '$status',
 				date_submitted = '$date_submitted',
-				date_resolved = '$date_resolved',
+				date_modified = now(),
+				modified_by = '$modified_by',
 				encoded_by = '$encoded_by',
 				date_encoded = '$date_encoded',
 				remarks = '$remarks'

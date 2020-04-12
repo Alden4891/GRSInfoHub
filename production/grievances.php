@@ -34,14 +34,14 @@
             <table id="datatable-buttons" class="table table-striped table-bordered" style="width:100%">
                 <thead>
                     <tr>
-                        <th>CTRLNo.</th>
+                        <th style="width: 30px;">CTRLNo.</th>
                         <th>Description</th>
                         <th>Date Reported</th>
                         <th>Duration</th>
                         <th>Source</th>
                         <th>EODB</th>
                         <th>Status</th>
-                        <th style="width: 55px;">Options</th>
+                        <th style="width: 110px;">Options</th>
 
                     </tr>
                 </thead>
@@ -75,7 +75,7 @@
                                 , `lib_grssource`.`source`
                                 , `lib_status`.`status`
                                 , `grievances`.`DATE_SUBMITTED`
-                                , `grievances`.`DATE_RESOLVED`
+                                , `grievances`.`DATE_MODIFIED`
                                 , `grievances`.`DATE_ENCODED`
                                 , `grievances`.`Remarks`
                                 , `grievances`.`uid`
@@ -119,12 +119,12 @@
                                 $source=$r['source'];
                                 $status=$r['status'];
                                 $date_submitted=$r['DATE_SUBMITTED'];
-                                $date_resolved=$r['DATE_RESOLVED'];
+                                $date_modified=$r['DATE_MODIFIED'];
                                 //$fullname=$r['fullname'];
                                 $date_encoded=$r['DATE_ENCODED'];
                                 $remarks=$r['Remarks'];
                                 $uid=$r['uid'];
-                                $description=substr(Strip_tags($r['DESCRIPTION']), 0,200)."... <a href=\"#\" data-toggle=\"modal\" data-target=\"#previewGrievModal\" id=\"viewGriev\" guid=\"$uid\">read more</a>";
+                                $description=substr(Strip_tags(strtolower($r['DESCRIPTION'])), 0,100)."... <a href=\"#\" data-toggle=\"modal\" data-target=\"#previewGrievModal\" id=\"viewGriev\" guid=\"$uid\">read more</a>";
 
                                 $btn_detail_class = "";
 
@@ -170,8 +170,10 @@
                                         <td>$status</td>
                                         <td>
 
-                                            <button type=\"button\" class=\"btn btn-sm btn-info\" aria-label=\"Left Align\"  data-toggle=\"modal\" data-target=\"#interv_list_editor_modal\" guid=\"$uid\" ctrlno=\"$ctrlno\" docid=\"$docid\" id=\"btn_interv_list_editor_open\" psgc=\"$psgc\">
-                                              <span class=\"glyphicon glyphicon-list\" aria-hidden=\"true\"></span>
+                                            <button type=\"button\" class=\"btn btn-sm btn-info\" aria-label=\"Left Align\"  data-toggle=\"modal\" data-target=\"#interv_list_editor_modal\" guid=\"$uid\" ctrlno=\"$ctrlno\" docid=\"$docid\" id=\"btn_interv_list_editor_open\" 
+                                              psgc=\"$psgc\"
+                                              >
+                                              <span class=\"glyphicon glyphicon-edit\" aria-hidden=\"true\"></span>
                                             </button>
 
 
@@ -179,9 +181,20 @@
                                             data-backdrop=\"static\" data-keyboard=\"false\"
                                             data-toggle=\"modal\" 
                                             data-target=\"#modal_peview_grievance\" 
-                                            guid=\"$uid\" id=\"btn_griev_preview\">
-                                            <span class=\"glyphicon glyphicon-list\" aria-hidden=\"true\"></span>
+                                            guid=\"$uid\" id=\"btn_griev_preview\"
+                                            ctrlno=\"$ctrlno\" 
+                                            docid=\"$docid\"
+                                            psgc=\"$psgc\"
+
+                                            >
+                                            <span class=\"glyphicon glyphicon-eye-open\" aria-hidden=\"true\"></span>
                                             </button>
+
+
+                                            <button disabled type=\"button\" class=\"btn btn-sm btn-danger\" >
+                                            <span class=\"glyphicon glyphicon-remove-sign\" aria-hidden=\"true\"></span>
+                                            </button>
+
 
                                         </td>
                                     </tr>
@@ -227,7 +240,7 @@
                       <div class="row">
                         <div class="  invoice-header">
                           <h2>
-                              <i class="fa fa-globe"></i> CTRL No. 234567890-1231231232
+                              <i class="fa fa-globe"></i> CTRL No. <span id="gi_docid"></span>
                           </h2>
                         </div>
                         <!-- /.col -->
@@ -264,6 +277,8 @@
                           <address>
                               <strong>Status: </strong> <span id="gs_status"></span><br>
                               <strong>Duration: </strong> <span id="gs_duration"></span><br>
+                              <strong>Date Last Modified: </strong> <span id="gs_date_modified"></span><br>
+                              <strong>Last Modified by: </strong> <span id="gs_modified_by"></span><br>
                            </address>
                         </div>
                         <!-- /.col -->
@@ -284,8 +299,13 @@
                <h2>Grievance Description</h2>
             </div>
             <div class="pull-right">
-                <button type="button" class="btn btn-sm btn-info" aria-label="Left Align"  data-toggle="modal" data-target="#interv_list_editor_modal" guid="$uid" ctrlno="$ctrlno" docid="$docid" id="btn_interv_list_editor_open" psgc="$psgc">
+
+
+                <button type="button" class="btn btn-sm btn-info view_editor_button" aria-label="Left Align"  data-toggle="modal" data-target="#interv_list_editor_modal" guid="$uid" ctrlno="$ctrlno" docid="$docid" id="btn_interv_list_editor_open" psgc="$psgc">
                 EDIT
+                </button>
+                <button type="button" class="btn btn-sm btn-info" data-dismiss="modal" aria-label="Close">
+                  CLOSE THIS WINDOW
                 </button>
             </div>
             
@@ -384,7 +404,7 @@
                         <input type="hidden" id="hid_user_id" name="hid_user_id" value="<?=$user_id?>">
                         <input type="hidden" id="hid_uuid" name="hid_uuid" value="">
                         <input type="hidden" id="hid_date_submitted" name="hid_date_submitted" value="">
-                        <input type="hidden" id="hid_date_resolved" name="hid_date_resolved" value="">
+                        <input type="hidden" id="hid_date_modified" name="hid_date_modified" value="">
                         <input type="hidden" id="hid_date_encoded" name="hid_date_encoded" value="">
                        <div class="x_content">
 
@@ -751,7 +771,7 @@
                     attachment_id: $(this).attr('attachment_id')
                 },
                 success: function(response) {
-                    console.log(response);
+                    // console.log(response);
                     if (response.indexOf("**success**") > -1) {
                         tr.fadeOut(500, function() {
                             parent.remove();
@@ -764,9 +784,9 @@
 
     //check attachments 
     $('#files').bind('change', function() {
-        if (this.files[0].size > 1000000){
+        if (this.files[0].size > 2000000){
             $("#files").replaceWith($("#files").val('').clone(true));
-            alert("The file is too huge. Please make sure that the file size will not exceed to 1MB");
+            alert("The file is too huge. Please make sure that the file size will not exceed to 2MB in size.");
             return;
         }
     });
@@ -779,7 +799,7 @@
         if (confirm('You are about to save the changes you made. Do you want to continue?')) {
             //$('#descr').html($('#editor-one').html());
             $('#hid_description').val($('#editor-one').html());
-            console.log($('#descr').html());
+            //console.log($('#descr').html());
           //  alert($('#descr').html());    
                 $.ajax({
                     type: 'POST',
@@ -791,7 +811,7 @@
                     cache: false,
                     enctype: 'multipart/form-data',
                     success: function(response) {
-                        console.log(response);
+                        // console.log(response);
                          if (response.indexOf("**success**") > -1){   
                                 notification_show("Saved",1);
                                 $('#btnSubmitGrievamce').attr('disabled',true);
@@ -801,174 +821,9 @@
                         //$('#interv_list_editor_modal').modal('hide');
                     }
                 });
-
-            
-
         }
-
-
-
     });
 
-    // $(document).on('submit', "#btnSubmitGrievamce", function(e) {
-    //     e.preventDefault();
-    //     if (confirm('You are about to save the changes you made. Do you want to continue?')) {
-
-
-    //         var cmbEdBarangay = $('#cmbEdBarangay').val();
-    //         var txtEdAddress = $('#txtEdAddress').html();
-    //         var txtEdFirstName = $('#txtEdFirstName').val();
-    //         var txtEdMiddleName = $('#txtEdMiddleName').val();
-    //         var txtEdLastName = $('#txtEdLastName').val();
-    //         var txtEdExt = $('#txtEdExt').val();
-    //         var txtEdContactNo = $('#txtEdContactNo').val();
-    //         var txtEdEmail = $('#txtEdEmail').val();
-
-    //         var cmbEdGRSCategory = $('#cmbEdGRSCategory').val();
-    //         var cmbEdGRSSubtype = $('#cmbEdGRSSubtype').val();
-    //         var description = $('#editor-one').html();
-
-
-    //         var cmbEdEODB = $('#cmbEdEODB').val();
-    //         var dtDateReported = $('#dtDateReported').val();
-    //         var cmbEdSource = $('#cmbEdSource').val();
-
-    //         var cmbEdStatus = $('#cmbEdStatus').val();
-    //         var txtEdRemarks = $('#txtEdRemarks').val();
-    //         var date_encoded= $('#hid_date_encoded').val();
-    //         var encoded_by= $('#hid_encoded_by').val();
-    //         var date_resolved= $('#hid_date_resolved').val();
-    //         var date_submitted= $('#hid_date_submitted').val();
-    //         var user_fullname = $('#hid_user_fullname').val();
-    //         var ctrlno = $('#hid_ctrlno').val();
-    //         var uuid = $('#hid_uuid').val();
-
-    //         var has_error = false;
-    //         if (cmbEdBarangay == null || cmbEdBarangay == -1) {
-    //             notification_show('All field with askterisk(*) is required!');
-    //             has_error = true;
-    //             return;
-    //         } else if (txtEdFirstName == '') {
-    //             notification_show('First Name is required!');
-    //             has_error = true;
-    //         } else if (txtEdLastName == "") {
-    //             notification_show('Last Name is required!');
-    //             has_error = true;
-    //         } else if (txtEdContactNo == "") {
-    //             notification_show('Last Name is required!');
-    //             has_error = true;
-    //         } else if (cmbEdGRSCategory == null || cmbEdGRSCategory == -1) {
-    //             notification_show('Category of grievance is required!');
-    //             has_error = true;
-    //         } else if (cmbEdGRSSubtype == null || cmbEdGRSSubtype == -1) {
-    //             notification_show('Type of grievance is required!');
-    //             has_error = true;
-    //         } else if (description == "") {
-    //             notification_show('Grievance description field is required!');
-    //             has_error = true;
-    //         } else if (cmbEdEODB == null) {
-    //             notification_show('EODB is required!');
-    //             has_error = true;
-    //         } else if (dtDateReported == null) {
-    //             notification_show('Date Reported is required!');
-    //             has_error = true;
-    //         } else if (cmbEdSource == null) {
-    //             notification_show('Source of grievance is required!');
-    //             has_error = true;
-    //         } else {
-    //             //save data
-    //             //INSERT INTO `db_grs`.`grievances`(`id`,`FIRSTNAME`,`MIDDLENAME`,`LASTNAME`,`EXT`,`PSGC`,`ADDRESS`,`CONTACTNO`,`EMAIL`,`GRS_TYPE`,`DESCRIPTION`,`EOOB`,`DATE_REPORTED`,`GRS_SOURCE`,`STATUS`,`DATE_SUBMITTED`,`DATE_RESOLVED`,`ENCODED_BY`,`DATE_ENCODED`,`Remarks`) VALUES ( NULL,'JOSE','P','RIZAL',NULL,'126306015','AAAAAAA','09468841123','asdas.gooogle.com','1','dasaadadasdasd','1','2020-04-07','1','1',NULL,NULL,'1','2020-04-07','okok!');
-
-    //             $.ajax({
-    //                 type: 'POST',
-    //                 url: 'proc/grievance_save.php',
-    //                 data: {
-    //                     ctrlno:ctrlno,
-    //                     firstname:txtEdFirstName,
-    //                     middlename:txtEdMiddleName,
-    //                     lastname:txtEdLastName,
-    //                     ext:txtEdExt,
-    //                     psgc:cmbEdBarangay,
-    //                     address:txtEdAddress,
-    //                     contactno:txtEdContactNo,
-    //                     email:txtEdEmail,
-    //                     grs_type:cmbEdGRSCategory,
-    //                     grs_subtype:cmbEdGRSSubtype,
-    //                     description:description,
-    //                     eoob:cmbEdEODB,
-    //                     date_reported:dtDateReported,
-    //                     grs_source:cmbEdSource,
-    //                     status:cmbEdStatus,
-    //                     date_submitted:date_submitted,
-    //                     date_resolved:date_resolved,
-    //                     encoded_by:encoded_by,
-    //                     date_encoded:date_encoded,
-    //                     remarks:txtEdRemarks,
-    //                     uuid:uuid,
-    //                     user_fullname: user_fullname,
-
-    //                 },
-    //                 success: function(response) {
-    //                     console.log(response);
-    //                      if (response.indexOf("**success**") > -1){   
-
-    //                             /*
-    //                                 1. check if has attachments
-    //                                 2. if so, fetch grievance uid from grievance_save.php post
-
-
-
-    //                                   //start upload attachments      
-    //                                  var form_data = new FormData();
-    //                                  var totalfiles = document.getElementById('files').files.length;
-    //                                  for (var index = 0; index < totalfiles; index++) {
-    //                                     form_data.append("files[]", document.getElementById('files').files[index]);
-    //                                  }
-    //                                  $.ajax({
-    //                                    url: 'upload.php', 
-    //                                    type: 'post',
-    //                                    data: form_data,
-    //                                    //dataType: 'json',
-    //                                    contentType: false,
-    //                                    processData: false,
-    //                                    success: function (response) {
-
-    //                                        $('#preview').html(response);
-    //                                        //alert(1);
-    //                                        //console.log(response);
-    //                                      // for(var index = 0; index < response.length; index++) {
-    //                                      //   var src = response[index];
-
-    //                                      //   // Add img element in <div id='preview'>
-    //                                      //   $('#preview').append(src);
-    //                                      // }
-    //                                    }
-    //                                  });
-    //                                  //End upload attachments      
-    //                             */
-
-
-
-    //                             notification_show("Saved",1);
-    //                             $('#btnSubmitGrievamce').attr('disabled',true);
-    //                      }else if (response.indexOf("**no-changes**") > -1) {
-    //                              notification_show("No changes made!",0);
-    //                      }
-
-                       
-
-
-
-    //                     //$('#interv_list_editor_modal').modal('hide');
-
-    //                 }
-    //             });
-
-    //         }
-
-    //     }
-
-    // });
 
     //delete grievance
     $(document).on('click', '#btn_delete_grievance', function(e) {
@@ -1018,10 +873,14 @@
     $(document).on('click', "#btn_interv_list_editor_open", function(e) {
         e.preventDefault();
 
+
         var psgc = $(this).attr('psgc');
         var guid = $(this).attr('guid'); 
         var ctrlno = $(this).attr('ctrlno'); 
         var docid = $(this).attr('docid'); 
+
+       
+
 
          $('#btnSubmitGrievamce').attr('disabled',false);
          $('#editors-notification').attr('hidden',true);
@@ -1118,7 +977,7 @@
                         r[16] = `source`
                         r[17] = `status`
                         r[18] = `DATE_SUBMITTED`
-                        r[19] = `DATE_RESOLVED`
+                        r[19] = `DATE_MODIFIED`
                         r[20] = `ENCODED_BY`
                         r[21] = `DATE_ENCODED`
                         r[22] = `Remarks`
@@ -1145,7 +1004,7 @@
                     $('#hid_ctrlno').val(ctrlno);
                     $('#hid_uuid').val(arr[28]);
                     $('#hid_date_submitted').val(arr[18]);
-                    $('#hid_date_resolved').val(arr[19]);
+                    $('#hid_date_modified').val(arr[19]);
                     $('#hid_date_encoded').val(arr[21]);
                     $('#hid_encoded_by').val(arr[20]);
 
@@ -1187,6 +1046,8 @@
 
                     $('#editor-one').html(arr[13]);
           
+
+      
                     $.ajax({
                         type: 'GET',
                         url: './proc/getComboData.php',
@@ -1195,7 +1056,7 @@
                             valueMember: "id",
                             displayMember: "`eoob`",
                             condition: "1=1",
-                            selected: parseInt(arr[14]),
+                            selected: parseInt(arr[25]),
                         },
                         success: function(response) {
                             //console.log(response);
@@ -1274,7 +1135,7 @@
             $('#hid_encoded_by').val('');
             $('#hid_date_submitted').val('');
             $('#hid_date_encoded').val('');
-            $('#hid_date_resolved').val('');
+            $('#hid_date_modified').val('');
  
            //TAB 1
             $.ajax({
@@ -1466,6 +1327,16 @@
 
             //get grievance details
             var guid = $(this).attr('guid');
+            var psgc = $(this).attr('psgc');
+            var ctrlno = $(this).attr('ctrlno');
+            var docid = $(this).attr('docid');
+
+            $('.view_editor_button').attr('guid',guid);
+            $('.view_editor_button').attr('psgc',psgc);
+            $('.view_editor_button').attr('ctrlno',ctrlno);
+            $('.view_editor_button').attr('docid',docid);
+
+            //***
 
             $.ajax({
                 type: 'GET',
@@ -1475,7 +1346,7 @@
                 },
                 success: function(response) {
                     
-                    console.log(response);
+                    // console.log(response);
                     var arr = response.split('|');
                     /*
                     RESULTS:
@@ -1498,7 +1369,7 @@
                         r[16] = `source`
                         r[17] = `status`
                         r[18] = `DATE_SUBMITTED`
-                        r[19] = `DATE_RESOLVED`
+                        r[19] = `DATE_MODIFIED`
                         r[20] = `ENCODED_BY`
                         r[21] = `DATE_ENCODED`
                         r[22] = `Remarks`
@@ -1512,6 +1383,9 @@
 
                              29  grs_subtype_id
                              30  subtype
+                             31  modified by
+
+
                     */
 
                     //COMPLIANT INFORMATION
@@ -1523,22 +1397,28 @@
                     $('#ci_brgy').html(arr[9]);
 
                     //grievacnce information
+
+
+                    $('#gi_docid').html(docid);
                     $('#gi_gcategory').html(arr[12]);
-                    $('#gi_gtype').html(arr[29]);
+                    $('#gi_gtype').html(arr[30]);
                     $('#gi_eodb').html(arr[14]);
                     $('#gi_date_reported').html(arr[15]);
                     $('#gi_gsource').html(arr[16]);
                     $('#gi_assessedby').html(arr[20]);
                     $('#gi_description').html(arr[13]);
 
+
+
                     //grievance status
                     $('#gs_status').html(arr[17]);
                     $('#gi_remarks').html(arr[22]);
 
 
+
                       var today = new Date();
-                      var diffMs = (today-arr[15]); // milliseconds between now & Christmas
-                      
+                      var comdate = new Date(arr[15]);
+                      var diffMs = (today-comdate); // milliseconds between now & Christmas
                       var diffDays = Math.floor(diffMs / 86400000); // days
                       var diffMonths = Math.floor(diffMs / 8.64e+8); // days
                       var diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
@@ -1555,9 +1435,9 @@
                           duration = diffHrs + " minutes ago";
                       }
 
-
-
                     $('#gs_duration').html(duration);
+                    $('#gs_modified_by').html(arr[31]);
+                    $('#gs_date_modified').html(arr[19]);
 
                     //ATTACHMENTS
 

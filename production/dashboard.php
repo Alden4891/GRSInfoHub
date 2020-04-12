@@ -440,7 +440,7 @@
                     enddate: toDate,
                 },
                 success: function(response) {
-                  console.log("res2:"+response);
+                  //console.log("res2:"+response);
                     var arr_data1 = [];
                     var arr_data2 = [];
 

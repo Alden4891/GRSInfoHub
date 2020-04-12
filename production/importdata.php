@@ -46,7 +46,7 @@
 
                         <form>
                           <div class="custom-file">
-                            <input type="file"  class="custom-file-input" id="files" multiple accept=".grs;" name="files[]">
+                            <input type="file"  class="custom-file-input" id="files" multiple accept=".grs" name="files[]">
                             <label class="custom-file-label" for="customFile">Choose file</label>
                           </div>
                           <br><br><button disabled id="btn_merge_grs" class="btn btn-sm btn-success btn-block" type="button">Upload</button>

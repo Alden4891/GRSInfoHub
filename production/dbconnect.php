@@ -1,5 +1,5 @@
 <?php
-	$con_password = '';
+	$con_password = 'usbw';
 	$con_username = 'root';
 	$con_database = 'db_grs';
 	$con_host = 'localhost';

@@ -126,19 +126,14 @@
                 <ul class="nav side-menu">
                   <li><a href="?page=dashboard"><i class="fa fa-dashboard"></i> DASHBAORD</span></a></li>
                   <li><a href="?page=grievances"><i class="fa fa-child"></i> GRIEVANCES</span></a></li>
-                   <li><a><i class="fa fa-exchange"></i> IMPORT/EXPORT <span class="fa fa-chevron-down"></span></a>
+                   <li><a><i class="fa fa-exchange"></i> DATA MANAGEMENT <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="?page=importdata">IMPORT DATA</a></li>
-                      <li><a href="?page=exportdata">EXPORT DATA</a></li>
+                      <li><a href="?page=importdata">CONSOLIDATE DATA</a></li>
+                      <li><a href="?page=exportdata">GENERATE DATA</a></li>
                     </ul>
                   </li>
-
-
                   <li><a href="?page=reports"><i class="fa fa-area-chart"></i> REPORTS</span></a></li>
-                  <li><a href="?page=debug"><i class="fa fa-flash"></i> DEBUGGER</span></a></li>
-
-
-
+                  <!-- <li><a href="?page=debug"><i class="fa fa-flash"></i> DEBUGGER</span></a></li> -->
                 </ul>
               </div>
               <div class="menu_section">
@@ -319,7 +314,7 @@ $(document).on('click','#viewGriev',function(){
                         r[16] = `source`
                         r[17] = `status`
                         r[18] = `DATE_SUBMITTED`
-                        r[19] = `DATE_RESOLVED`
+                        r[19] = `DATE_MODIFIED`
                         r[20] = `ENCODED_BY`
                         r[21] = `DATE_ENCODED`
                         r[22] = `Remarks`
@@ -398,7 +393,7 @@ $('#uploadfile2').on("submit",function (e) {
         var user_inputed_ver_password = $('#verify_password').val();
 
         var error_count = 0;
-        console.log('cur_password: '+cur_password);
+        // console.log('cur_password: '+cur_password);
         if (user_inputed_cur_password == '') {
             $('#current_password').closest("div").addClass("has-error");
             $('#current_password').focus();

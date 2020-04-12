@@ -31,7 +31,7 @@ CREATE TABLE `attachments` (
   `uid` varchar(50) COLLATE ascii_bin DEFAULT NULL,
   `guid` varchar(50) COLLATE ascii_bin DEFAULT NULL COMMENT 'Grievance uid',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -73,14 +73,15 @@ CREATE TABLE `grievances` (
   `GRS_SOURCE` int(11) DEFAULT NULL,
   `STATUS` int(11) DEFAULT NULL,
   `DATE_SUBMITTED` date DEFAULT NULL,
-  `DATE_RESOLVED` date DEFAULT NULL,
+  `DATE_MODIFIED` date DEFAULT NULL,
+  `MODIFIED_BY` varchar(100) COLLATE ascii_bin DEFAULT NULL,
   `ENCODED_BY` varchar(100) COLLATE ascii_bin DEFAULT NULL,
   `DATE_ENCODED` datetime DEFAULT NULL,
   `Remarks` text COLLATE ascii_bin DEFAULT NULL,
   `uid` varchar(50) COLLATE ascii_bin DEFAULT NULL,
   `docid` varchar(50) COLLATE ascii_bin DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,7 +96,7 @@ CREATE TABLE `images` (
   `image` blob DEFAULT NULL,
   `description` varchar(50) COLLATE ascii_bin DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=ascii COLLATE=ascii_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -300,7 +301,7 @@ CREATE TABLE `users` (
   `picture_size` varchar(40) DEFAULT NULL,
   `picture_type` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -312,4 +313,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-11 20:19:25
+-- Dump completed on 2020-04-12 21:35:18
