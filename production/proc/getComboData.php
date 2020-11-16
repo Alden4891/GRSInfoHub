@@ -7,9 +7,12 @@ $displayMember 	=  (isset($_REQUEST['displayMember'])?$_REQUEST['displayMember']
 $condition 		=  (isset($_REQUEST['condition'])?$_REQUEST['condition']:'');
 $selected 		=  (isset($_REQUEST['selected'])?$_REQUEST['selected']:'');
 
+if ($condition != ""){
+	$condition = "where $condition;";
+}
 
-$sql =  "SELECT $valueMember, $displayMember FROM `$tableName` WHERE $condition;";
-
+$sql =  "SELECT $valueMember, $displayMember FROM `$tableName` $condition;";
+echo "[$sql]";
 $res = mysqli_query($con, $sql ) OR die (mysqli_error($con));
 
 

@@ -19,41 +19,11 @@ include 'dbconnect.php';
 
 			header("Content-Type: image/jpeg");
 			echo $row2["image"];
-
-
 		}
         
 	}
 	//mysqli_close($conn);
-
-
 include 'dbclose.php';
-
-
-
-
-
-
-/*
-
-include 'dbconnect.php';
-
-    if(isset($_GET['user_id'])) {
-        $sql = "SELECT picture  FROM users WHERE user_id = ".$_GET['user_id'];
-		$result = mysqli_query($con, $sql) or die("<b>Error:</b> Problem on Retrieving Image BLOB<br/>" . mysqli_error($conn));
-		$row = mysqli_fetch_array($result);
-		header("Content-Type: image/jpeg");
-        echo $row["picture"];
-	}
-	mysqli_close($conn);
-
-
-include 'dbclose.php';
-*/
-
-
-
-
 
 ?>
 

@@ -10,7 +10,7 @@ $res = mysqli_query($con, "
             , `grievances`.`LASTNAME`
             , `grievances`.`EXT`
 
-            , `lib_psgc`.`PSGC`
+           , `lib_psgc`.`PSGC`
             , `lib_psgc`.`REGION`
             , `lib_psgc`.`PROVINCE`
             , `lib_psgc`.`MUNICIPALITY`
@@ -27,18 +27,29 @@ $res = mysqli_query($con, "
             , `grievances`.`DESCRIPTION`
             , `lib_eoob`.`eoob` AS 'EOOB'
             , `grievances`.`EOOB` AS EODB_ID
+
             , `grievances`.`DATE_REPORTED`
             , `lib_grssource`.`source`
             , `lib_grssource`.`id` AS 'source_id'
             , `lib_status`.`status`
             , `lib_status`.`id` AS 'status_id'
+
             , `grievances`.`DATE_SUBMITTED`
             , `grievances`.`DATE_MODIFIED`
             , `grievances`.`ENCODED_BY` 
             , `grievances`.`DATE_ENCODED`
             , `grievances`.`Remarks`
+
             , `grievances`.`uid`
             , `grievances`.`MODIFIED_BY`
+ 
+            , `grievances`.`act_taken`
+            , `grievances`.`act_date`
+            , `grievances`.`res_date`
+            , `grievances`.`res_description`
+            , `grievances`.`fed_date`
+
+ 
 
         FROM
             `db_grs`.`grievances`
@@ -47,14 +58,13 @@ $res = mysqli_query($con, "
             INNER JOIN `db_grs`.`lib_grssubtype`
                 ON (`grievances`.`GRS_TYPE` = `lib_grssubtype`.`id`)
             INNER JOIN `db_grs`.`lib_grstype`
-                ON (`lib_grstype`.`id` = `lib_grssubtype`.`type`)
+                ON (`lib_grstype`.`id` = `grievances`.`grs_cat`)
             INNER JOIN `db_grs`.`lib_grssource` 
                 ON (`grievances`.`GRS_SOURCE` = `lib_grssource`.`id`)
             INNER JOIN `db_grs`.`lib_eoob` 
                 ON (`grievances`.`EOOB` = `lib_eoob`.`id`)
             INNER JOIN `db_grs`.`lib_status` 
                 ON (`lib_status`.`id` = `grievances`.`STATUS`)
-
         WHERE (`grievances`.`uid` = '$guid')
         ;
 
@@ -100,16 +110,23 @@ $res = mysqli_query($con, "
             $grs_subtype_id = $r['grs_subtype_id'];
 
             $subtype = $r['subtype'];
-            $modified_by = $r['MODIFIED_BY'];
+            $modified_by = $r['MODIFIED_BY'];           //31
+
+            $act_taken       = $r['act_taken'];         //32
+            $act_date        = $r['act_date'];          //33
+            $res_date        = $r['res_date'];          //34
+            $res_description = $r['res_description'];   //35
+            $fed_date        = $r['fed_date'];          //36
 
 
     $data =  "$id|$firstname|$middlename|$lastname|$ext|";
     $data .= "$psgc|$region|$province|$municipality|$barangayname|";
     $data .= "$contactno|$email|$grs_type|$description|$eoob|";
-    $data .= "$date_reported|$source|$status|$date_submitted|";
-    $data .= "$date_modified|$ENCODED_BY|$date_encoded|$remarks|$address|";
-    $data .= "$grs_type_id|$EODB_ID|$source_id|$status_id|$uuid|";
-    $data .= "$grs_subtype_id|$subtype|$modified_by";
+    $data .= "$date_reported|$source|$status|$date_submitted|$date_modified|";
+    $data .= "$ENCODED_BY|$date_encoded|$remarks|$address|$grs_type_id|";
+    $data .= "$EODB_ID|$source_id|$status_id|$uuid|$grs_subtype_id|";
+    $data .= "$subtype|$modified_by|$act_taken|$act_date|$res_date|";
+    $data .= "$res_description|$fed_date|";
 
 
 	echo $data;

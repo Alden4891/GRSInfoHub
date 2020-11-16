@@ -5,7 +5,7 @@ include '../dbconnect.php';
 $return_arr = array();
 
 $query = "
-SELECT 0 AS id, 'total_interv' AS grs_type,COUNT(id) AS `value` FROM db_grs.grievances
+SELECT 0 AS id, 'total_interv' AS grs_type,COUNT(id) AS `value` FROM grievances
 UNION ALL
 SELECT
     `lib_grstype`.`id`

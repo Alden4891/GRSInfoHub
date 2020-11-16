@@ -67,12 +67,12 @@ for($index = 0;$index < $countfiles;$index++){
             $remarks = $value[20];
             $uid = $value[21];
             $docid = $value[22];
-
+            $grs_cat = $value[23];
         
 
             $data_attachments = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) AS isEXISTS FROM grievances WHERE uid = '$uid';"));
             if ($data_attachments['isEXISTS']==0){
-                $sql = "INSERT INTO `db_grs`.`grievances`(`id`,`FIRSTNAME`,`MIDDLENAME`,`LASTNAME`,`EXT`,`PSGC`,`ADDRESS`,`CONTACTNO`,`EMAIL`,`GRS_TYPE`,`DESCRIPTION`,`EOOB`,`DATE_REPORTED`,`GRS_SOURCE`,`STATUS`,`DATE_SUBMITTED`,`DATE_MODIFIED`,`MODIFIED_BY`,`ENCODED_BY`,`DATE_ENCODED`,`Remarks`,`uid`,`docid`) 
+                $sql = "INSERT INTO `db_grs`.`grievances`(`id`,`FIRSTNAME`,`MIDDLENAME`,`LASTNAME`,`EXT`,`PSGC`,`ADDRESS`,`CONTACTNO`,`EMAIL`,`GRS_TYPE`,`DESCRIPTION`,`EOOB`,`DATE_REPORTED`,`GRS_SOURCE`,`STATUS`,`DATE_SUBMITTED`,`DATE_MODIFIED`,`MODIFIED_BY`,`ENCODED_BY`,`DATE_ENCODED`,`Remarks`,`uid`,`docid`,`grs_cat`) 
                 VALUES ( 
                    NULL
                   ,'$firstname'
@@ -97,6 +97,7 @@ for($index = 0;$index < $countfiles;$index++){
                   ,'$remarks'
                   ,'$uid'
                   ,'$docid'
+                  ,'$grs_cat'
                 );";
 
                 //echo "$sql";
@@ -125,7 +126,8 @@ for($index = 0;$index < $countfiles;$index++){
                           ENCODED_BY = '$encoded_by',
                           DATE_ENCODED = '$date_encoded',
                           Remarks = '$remarks',
-                          docid = '$docid'
+                          docid = '$docid' ,
+                          grs_cat = '$grs_cat'
                       WHERE uid = '$uid';";
                       mysqli_query($con,$sql) or die('**error**');
                       if (mysqli_affected_rows($con)>0){

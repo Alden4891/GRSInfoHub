@@ -4,32 +4,27 @@
 <database charset="ascii" collation="ascii_bin">db_grs</database>
 </source>
 <canvas>
-<table tablename="grievances" alias="" left="473" top="106" width="150" height="218" />
-<table tablename="lib_psgc" alias="r" left="679" top="2" width="150" height="203" />
-<table tablename="lib_grstype" alias="" left="15" top="23" width="150" height="113" />
-<table tablename="lib_grssubtype" alias="" left="188" top="42" width="150" height="113" />
-<table tablename="lib_eoob" alias="" left="97" top="215" width="150" height="113" />
-<table tablename="lib_grssource" alias="" left="378" top="27" width="150" height="113" />
-<table tablename="lib_status" alias="" left="4" top="142" width="150" height="113" />
+<table tablename="grievances" alias="" left="231" top="36" width="150" height="218" />
+<table tablename="lib_psgc" alias="" left="22" top="37" width="150" height="113" />
+<table tablename="lib_grssource" alias="" left="525" top="-6" width="150" height="113" />
+<table tablename="lib_grstype" alias="grs_cat" left="466" top="189" width="150" height="113" />
+<table tablename="lib_grssubtype" alias="sap_compo" left="613" top="102" width="150" height="113" />
+<table tablename="lib_status" alias="" left="461" top="114" width="150" height="113" />
 <join type = "Inner Join">
-<from tablename = "grievances" alias = "">PSGC</from>
-<to tablename = "lib_psgc" alias = "r">PSGC</to>
+<from tablename = "lib_psgc" alias = "">PSGC</from>
+<to tablename = "grievances" alias = "">PSGC</to>
 </join>
 <join type = "Inner Join">
-<from tablename = "lib_grssubtype" alias = "">id</from>
-<to tablename = "grievances" alias = "">GRS_TYPE</to>
+<from tablename = "grievances" alias = "">GRS_SOURCE</from>
+<to tablename = "lib_grssource" alias = "">id</to>
 </join>
 <join type = "Inner Join">
-<from tablename = "grievances" alias = "">EOOB</from>
-<to tablename = "lib_eoob" alias = "">id</to>
+<from tablename = "grievances" alias = "">GRS_CAT</from>
+<to tablename = "lib_grstype" alias = "grs_cat">id</to>
 </join>
 <join type = "Inner Join">
-<from tablename = "lib_grssubtype" alias = "">type</from>
-<to tablename = "lib_grstype" alias = "">id</to>
-</join>
-<join type = "Inner Join">
-<from tablename = "lib_grssource" alias = "">id</from>
-<to tablename = "grievances" alias = "">GRS_SOURCE</to>
+<from tablename = "grievances" alias = "">GRS_TYPE</from>
+<to tablename = "lib_grssubtype" alias = "sap_compo">id</to>
 </join>
 <join type = "Inner Join">
 <from tablename = "grievances" alias = "">STATUS</from>
@@ -38,22 +33,7 @@
 </canvas>
 <grid>
 <column id="1">
-<table tablename="grievances"></table>
-<field>id</field>
-<alias>CTRLNO</alias>
-<show>true</show>
-<sortorder></sortorder>
-<sort></sort>
-<groupby>false</groupby>
-<aggfunct></aggfunct>
-<criteria></criteria>
-<or1></or1>
-<or2></or2>
-<or3></or3>
-<or4></or4>
-</column>
-<column id="2">
-<table tablename="lib_psgc">r</table>
+<table tablename="lib_psgc"></table>
 <field>PROVINCE</field>
 <alias></alias>
 <show>true</show>
@@ -67,8 +47,8 @@
 <or3></or3>
 <or4></or4>
 </column>
-<column id="3">
-<table tablename="lib_psgc">r</table>
+<column id="2">
+<table tablename="lib_psgc"></table>
 <field>MUNICIPALITY</field>
 <alias></alias>
 <show>true</show>
@@ -82,10 +62,25 @@
 <or3></or3>
 <or4></or4>
 </column>
+<column id="3">
+<table tablename="lib_grssource"></table>
+<field>source</field>
+<alias>mode_of_filing</alias>
+<show>true</show>
+<sortorder></sortorder>
+<sort></sort>
+<groupby>false</groupby>
+<aggfunct></aggfunct>
+<criteria></criteria>
+<or1></or1>
+<or2></or2>
+<or3></or3>
+<or4></or4>
+</column>
 <column id="4">
-<table tablename="lib_psgc">r</table>
-<field>BARANGAY</field>
-<alias></alias>
+<table tablename="grievances"></table>
+<field>DATE_REPORTED</field>
+<alias>date_intake</alias>
 <show>true</show>
 <sortorder></sortorder>
 <sort></sort>
@@ -98,9 +93,9 @@
 <or4></or4>
 </column>
 <column id="5">
-<table tablename="lib_grstype"></table>
+<table tablename="lib_grstype">grs_cat</table>
 <field>grs_type</field>
-<alias></alias>
+<alias>category</alias>
 <show>true</show>
 <sortorder></sortorder>
 <sort></sort>
@@ -113,9 +108,9 @@
 <or4></or4>
 </column>
 <column id="6">
-<table tablename="lib_grssubtype"></table>
+<table tablename="lib_grssubtype">sap_compo</table>
 <field>subtype</field>
-<alias></alias>
+<alias>compnent</alias>
 <show>true</show>
 <sortorder></sortorder>
 <sort></sort>
@@ -129,7 +124,7 @@
 </column>
 <column id="7">
 <table tablename="grievances"></table>
-<field>FIRSTNAME</field>
+<field>DESCRIPTION</field>
 <alias></alias>
 <show>true</show>
 <sortorder></sortorder>
@@ -144,8 +139,8 @@
 </column>
 <column id="8">
 <table tablename="grievances"></table>
-<field>MIDDLENAME</field>
-<alias></alias>
+<field>Remarks</field>
+<alias>response_provided</alias>
 <show>true</show>
 <sortorder></sortorder>
 <sort></sort>
@@ -159,8 +154,8 @@
 </column>
 <column id="9">
 <table tablename="grievances"></table>
-<field>LASTNAME</field>
-<alias></alias>
+<field>act_taken</field>
+<alias>action_taken</alias>
 <show>true</show>
 <sortorder></sortorder>
 <sort></sort>
@@ -174,8 +169,8 @@
 </column>
 <column id="10">
 <table tablename="grievances"></table>
-<field>EXT</field>
-<alias></alias>
+<field>act_date</field>
+<alias>action_date</alias>
 <show>true</show>
 <sortorder></sortorder>
 <sort></sort>
@@ -189,8 +184,8 @@
 </column>
 <column id="11">
 <table tablename="grievances"></table>
-<field>CONTACTNO</field>
-<alias></alias>
+<field>fed_date</field>
+<alias>feedback_date</alias>
 <show>true</show>
 <sortorder></sortorder>
 <sort></sort>
@@ -203,8 +198,8 @@
 <or4></or4>
 </column>
 <column id="12">
-<table tablename="grievances"></table>
-<field>EMAIL</field>
+<table tablename="lib_status"></table>
+<field>status</field>
 <alias></alias>
 <show>true</show>
 <sortorder></sortorder>
@@ -218,8 +213,8 @@
 <or4></or4>
 </column>
 <column id="13">
-<table tablename="lib_eoob"></table>
-<field>eoob</field>
+<table tablename="grievances"></table>
+<field>res_date</field>
 <alias></alias>
 <show>true</show>
 <sortorder></sortorder>
@@ -233,38 +228,8 @@
 <or4></or4>
 </column>
 <column id="14">
-<table tablename="lib_grssource"></table>
-<field>source</field>
-<alias></alias>
-<show>true</show>
-<sortorder></sortorder>
-<sort></sort>
-<groupby>false</groupby>
-<aggfunct></aggfunct>
-<criteria></criteria>
-<or1></or1>
-<or2></or2>
-<or3></or3>
-<or4></or4>
-</column>
-<column id="15">
 <table tablename="grievances"></table>
-<field>DATE_REPORTED</field>
-<alias></alias>
-<show>true</show>
-<sortorder></sortorder>
-<sort></sort>
-<groupby>false</groupby>
-<aggfunct></aggfunct>
-<criteria></criteria>
-<or1></or1>
-<or2></or2>
-<or3></or3>
-<or4></or4>
-</column>
-<column id="16">
-<table tablename="lib_status"></table>
-<field>status</field>
+<field>res_description</field>
 <alias></alias>
 <show>true</show>
 <sortorder></sortorder>

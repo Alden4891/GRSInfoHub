@@ -23,22 +23,28 @@ $TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load the OpenTBS plugin
 
 $sql = "
 
+SELECT 
+    REGION,
+    PROVINCE,
+    MUNICIPALITY,
+    SUM(Pending) AS PENDING, 
+    SUM(Ongoing) AS ONGOING,
+    SUM(Resolved) AS RESOLVED, 
+    SUM(Pending)/SUM(Total) AS PER_PENDING,
+    SUM(Ongoing)/SUM(Total) AS PER_ONGOING,
+    SUM(Resolved)/SUM(Total) AS PER_RESOLVED,
+    SUM(Total) AS TOTAL   
+    
+FROM (
+
 SELECT
       `r`.`REGION`
     , `r`.`PROVINCE`
     , `r`.`MUNICIPALITY`
-    , `lib_grssource`.`source` AS `mode_of_filing`
-    , `grievances`.`DATE_REPORTED` AS `date_intake`
-    , `grs_cat`.`grs_type` AS `category`
-    , `sap_compo`.`subtype` AS `compnent`
-    , `grievances`.`DESCRIPTION`
-    , `grievances`.`Remarks` AS `response_provided`
-    , `grievances`.`act_taken` AS `action_taken`
-    , `grievances`.`act_date` AS `action_date`
-    , `grievances`.`fed_date` AS `feedback_date`
-    , `lib_status`.`status`
-    , `grievances`.`res_date`
-    , `grievances`.`res_description`
+    ,  CASE WHEN `lib_status`.`status` = 'Pending' THEN COUNT(`lib_status`.`status`) ELSE 0 END AS 'Pending'
+    ,  CASE WHEN `lib_status`.`status` = 'Ongoing' THEN COUNT(`lib_status`.`status`) ELSE 0 END AS 'Ongoing'
+    ,  CASE WHEN `lib_status`.`status` = 'Resolved' THEN COUNT(`lib_status`.`status`) ELSE 0 END AS 'Resolved'
+    ,  COUNT(`lib_status`.`status`) AS Total
 FROM
     `db_grs`.`lib_psgc`  r
     INNER JOIN `db_grs`.`grievances` 
@@ -51,7 +57,13 @@ FROM
         ON (`grievances`.`GRS_TYPE` = `sap_compo`.`id`)
     INNER JOIN `db_grs`.`lib_status` 
         ON (`grievances`.`STATUS` = `lib_status`.`id`)
-WHERE $filter;
+
+GROUP BY r.REGION, r.MUNICIPALITY, `lib_status`.`status`
+) r
+WHERE $filter
+GROUP BY REGION,PROVINCE,MUNICIPALITY;
+
+
 ";
 
 include '../dbconnect.php';
@@ -67,7 +79,7 @@ include '../dbclose.php';
 // Load the template
 // -----------------
 
-$template = './templates/grs_r1.xlsx';
+$template = './templates/grs_r2.xlsx';
 $TBS->LoadTemplate($template, OPENTBS_ALREADY_UTF8); // Also merge some [onload] automatic fields (depends of the type of document).
 
 // ----------------------

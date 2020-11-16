@@ -10,6 +10,7 @@ $psgc=isset($_REQUEST['cmbEdBarangay'])?$_REQUEST['cmbEdBarangay']:'';
 $address=isset($_REQUEST['txtEdAddress'])?$_REQUEST['txtEdAddress']:'';
 $contactno=isset($_REQUEST['txtEdContactNo'])?$_REQUEST['txtEdContactNo']:'';
 $email=isset($_REQUEST['txtEdEmail'])?$_REQUEST['txtEdEmail']:'';
+$grs_cat=isset($_REQUEST['cmbEdGRSCategory'])?$_REQUEST['cmbEdGRSCategory']:'';
 $grs_type=isset($_REQUEST['cmbEdGRSSubtype'])?$_REQUEST['cmbEdGRSSubtype']:'';
 $description=isset($_REQUEST['hid_description'])?$_REQUEST['hid_description']:'';
 $eoob=isset($_REQUEST['cmbEdEODB'])?$_REQUEST['cmbEdEODB']:'';
@@ -20,9 +21,16 @@ $date_submitted=isset($_REQUEST['hid_date_submitted'])?$_REQUEST['hid_date_submi
 $date_modified=isset($_REQUEST['hid_date_modified'])?$_REQUEST['hid_date_modified']:'';
 $encoded_by=isset($_REQUEST['hid_encoded_by'])?$_REQUEST['hid_encoded_by']:'';
 $date_encoded=isset($_REQUEST['hid_date_encoded'])?$_REQUEST['hid_date_encoded']:'';
-$remarks=isset($_REQUEST['txtEdRemarks'])?$_REQUEST['txtEdRemarks']:'';
+$responseProvided=isset($_REQUEST['txtResponseProvided'])?$_REQUEST['txtResponseProvided']:'';
 $uuid=isset($_REQUEST['hid_uuid'])?$_REQUEST['hid_uuid']:'';
 $new_document_id = "";
+
+$txtEdResDescription=isset($_REQUEST['txtEdResDescription'])?$_REQUEST['txtEdResDescription']:'';
+$txtEdActionTaken=isset($_REQUEST['txtEdActionTaken'])?$_REQUEST['txtEdActionTaken']:'';
+$dtDateActioned=isset($_REQUEST['dtDateActioned'])?$_REQUEST['dtDateActioned']:'';
+$dtDateFeedback=isset($_REQUEST['dtDateFeedback'])?$_REQUEST['dtDateFeedback']:'';
+$dtDateResolution=isset($_REQUEST['dtDateResolution'])?$_REQUEST['dtDateResolution']:'';
+
 
 	include '../dbconnect.php';
 	
@@ -33,19 +41,81 @@ $new_document_id = "";
         $new_document_id = $psgc.'-'.str_pad($hid_user_id, 4, '0', STR_PAD_LEFT).str_pad($res_id['new_id'], 5, '0', STR_PAD_LEFT);
 		$encoded_by  = isset($_REQUEST['hid_user_fullname'])?$_REQUEST['hid_user_fullname']:'Anonymous';
 
-		$sql = "INSERT INTO `db_grs`.`grievances`(`id`,`docid`,`FIRSTNAME`,`MIDDLENAME`,`LASTNAME`,`EXT`,`PSGC`,`ADDRESS`,`CONTACTNO`,`EMAIL`,`GRS_TYPE`,`DESCRIPTION`,`EOOB`,`DATE_REPORTED`,`GRS_SOURCE`,`STATUS`,`DATE_SUBMITTED`,`DATE_MODIFIED`,`ENCODED_BY`,`DATE_ENCODED`,`Remarks`,`uid`) 
-		VALUES ( NULL,'$new_document_id','$firstname','$middlename','$lastname','$ext','$psgc','$address','$contactno','$email','$grs_type','$description','$eoob','$date_reported','$grs_source','$status','$date_submitted',null,'$encoded_by',now(),'$remarks','$uuid');";
+		$sql = "INSERT INTO `db_grs`.`grievances`(
+			 `id`
+			,`docid`
+			,`FIRSTNAME`
+			,`MIDDLENAME`
+			,`LASTNAME`
+			,`EXT`
+			,`PSGC`
+			,`ADDRESS`
+			,`CONTACTNO`
+			,`EMAIL`
+			,`GRS_TYPE`
+			,`DESCRIPTION`
+			,`EOOB`
+			,`DATE_REPORTED`
+			,`GRS_SOURCE`
+			,`STATUS`
+			,`DATE_SUBMITTED`
+			,`DATE_MODIFIED`
+			,`ENCODED_BY`
+			,`DATE_ENCODED`
+			,`Remarks`
+			,`uid`
+			,`GRS_CAT`
 
-		echo "[$description]";
+            , `act_taken`
+            , `act_date`
+            , `res_date`
+            , `res_description`
+            , `fed_date`
+			) 
+		VALUES ( 
+			  NULL
+			,'$new_document_id'
+			,'$firstname'
+			,'$middlename'
+			,'$lastname'
+			,'$ext'
+			,'$psgc'
+			,'$address'
+			,'$contactno'
+			,'$email'
+			,'$grs_type'
+			,'$description'
+			,'$eoob'
+			,'$date_reported'
+			,'$grs_source'
+			,'$status'
+			,'$date_submitted'
+			, null
+			,'$encoded_by'
+			,now()
+			,'$responseProvided'
+			,'$uuid'
+			,'$grs_cat'
+
+			,'$txtEdActionTaken'
+			,'$dtDateActioned'
+			,'$dtDateResolution'
+			,'$txtEdResDescription'
+			,'$dtDateFeedback'
+
+
+		);";
+
+
+		// echo "[$sql]";
 
     	mysqli_query($con, $sql);
     	$new_id = mysqli_insert_id($con);
     	$res_uid = mysqli_fetch_assoc(mysqli_query($con, "SELECT uid FROM grievances WHERE id = $new_id"));
         $new_guid = $res_uid['uid'];
 
-        //echo "files_count: ".empty($_FILES['files']);
 
-        if (!empty($_FILES['files'])){
+        if (!empty($_FILES['files']) && $_FILES['files']['name'][0] != ''){
 			$guid = $new_guid;
 			$countfiles = count($_FILES['files']['name']);
 			$files_arr = array();
@@ -96,7 +166,14 @@ $new_document_id = "";
 				modified_by = '$modified_by',
 				encoded_by = '$encoded_by',
 				date_encoded = '$date_encoded',
-				remarks = '$remarks'
+				remarks = '$responseProvided',
+				grs_cat = '$grs_cat', 
+			    act_taken = '$txtEdActionTaken',
+                act_date  = '$dtDateActioned',
+                res_date = '$dtDateResolution',
+                res_description = '$txtEdResDescription',
+                fed_date = '$dtDateFeedback'	
+			
 			WHERE uid = '$uuid';
 
 		";
@@ -107,7 +184,7 @@ $new_document_id = "";
 		  //       $new_guid = $res_uid['uid'];
 		  //$guid = $new_guid;
 
-		if (!empty($_FILES['files'])){
+		if (!empty($_FILES['files']) && $_FILES['files']['name'][0] != ''){
 			$countfiles = count($_FILES['files']['name']);
 			
 			//initiate upload attachments

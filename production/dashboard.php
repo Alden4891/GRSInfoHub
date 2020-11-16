@@ -10,19 +10,17 @@
                              $cnt=0;
                              $res_grivwidget = mysqli_query($con, "
 
-                          SELECT 0 AS id, 'total_griev' AS grs_type,COUNT(id) AS `value` FROM db_grs.grievances
+                          SELECT 0 AS id, 'total_griev' AS grs_type,COUNT(id) AS `value` FROM grievances
                           UNION ALL
                           SELECT
-                              `lib_grstype`.`id`
-                              , `lib_grstype`.`grs_type`
+                              `lib_grssubtype`.`id`
+                              , `lib_grssubtype`.`subtype` AS `grs_type`
                               , COUNT(`grievances`.`id`) AS `value`
                           FROM
-                              `db_grs`.`lib_grstype`
+                              `db_grs`.`grievances`
                               INNER JOIN `db_grs`.`lib_grssubtype` 
-                                  ON (`lib_grstype`.`id` = `lib_grssubtype`.`type`)
-                              INNER JOIN `db_grs`.`grievances` 
                                   ON (`grievances`.`GRS_TYPE` = `lib_grssubtype`.`id`)
-                          GROUP BY `lib_grstype`.`id`, `lib_grstype`.`grs_type`;                           
+                          GROUP BY `lib_grssubtype`.`id`, `grs_type`;                    
 
                              ") or die(mysqli_error());
                             while ($r=mysqli_fetch_array($res_grivwidget,MYSQLI_ASSOC)) {
@@ -98,6 +96,16 @@
                   </div>
 
                   <div class="col-md-12 col-sm-12 ">
+
+                    <div>
+                      <p>Pending</p>
+                      <div class="">
+                        <div class="progress progress_sm" style="width: 76%;">
+                          <div class="progress-bar bg-green" role="progressbar" data-valuemin="0" id="dbp_griev_open"></div>
+                        </div>
+                      </div>
+                    </div>
+
                     <div>
                       <p>On Going</p>
                       <div class="">
@@ -106,18 +114,13 @@
                         </div>
                       </div>
                     </div>
-                    <div>
-                      <p>Open</p>
-                      <div class="">
-                        <div class="progress progress_sm" style="width: 76%;">
-                          <div class="progress-bar bg-green" role="progressbar" data-valuemin="0" id="dbp_griev_open"></div>
-                        </div>
-                      </div>
-                    </div>
+
+
+
                   </div>
                   <div class="col-md-12 col-sm-12 ">
                     <div>
-                      <p>Closed</p>
+                      <p>Resolved</p>
                       <div class="">
                         <div class="progress progress_sm" style="width: 76%;">
                           <div class="progress-bar bg-green" role="progressbar" data-valuemin="0" id="dbp_griev_close"></div>
@@ -345,50 +348,52 @@
   //   console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
   // });
 
-  var chart_plot_01_settings = {
-        series: {
-          lines: {
-            show: false,
-            fill: true
+
+    var chart_plot_01_settings = {
+          series: {
+            lines: {
+              show: false,
+              fill: true
+            },
+            splines: {
+              show: true,
+              tension: 0.4,
+              lineWidth: 5,
+              fill: 0.1
+            },
+            points: {
+              radius: 4,
+              show: true
+            },
+            shadowSize: 2
           },
-          splines: {
-            show: true,
-            tension: 0.4,
-            lineWidth: 5,
-            fill: 0.1
+          grid: {
+            verticalLines: true,
+            hoverable: true,
+            clickable: true,
+            tickColor: "#d5d5d5",
+            borderWidth: 1,
+            color: '#fff'
           },
-          points: {
-            radius: 4,
-            show: true
+          colors: ["rgba(38, 185, 154, 0.38)", "rgba(3, 88, 106, 0.38)"],
+          xaxis: {
+            tickColor: "rgba(51, 51, 51, 0.06)",
+            mode: "time",
+            tickSize: [28, "day"],
+            //tickLength: 10,
+            axisLabel: "Date",
+            axisLabelUseCanvas: true,
+            axisLabelFontSizePixels: 12,
+            axisLabelFontFamily: 'Verdana, Arial',
+            axisLabelPadding: 10
           },
-          shadowSize: 2
-        },
-        grid: {
-          verticalLines: true,
-          hoverable: true,
-          clickable: true,
-          tickColor: "#d5d5d5",
-          borderWidth: 1,
-          color: '#fff'
-        },
-        colors: ["rgba(38, 185, 154, 0.38)", "rgba(3, 88, 106, 0.38)"],
-        xaxis: {
-          tickColor: "rgba(51, 51, 51, 0.06)",
-          mode: "time",
-          tickSize: [28, "day"],
-          //tickLength: 10,
-          axisLabel: "Date",
-          axisLabelUseCanvas: true,
-          axisLabelFontSizePixels: 12,
-          axisLabelFontFamily: 'Verdana, Arial',
-          axisLabelPadding: 10
-        },
-        yaxis: {
-          ticks: 8,
-          tickColor: "rgba(51, 51, 51, 0.06)",
-        },
-        tooltip: false
-      }
+          yaxis: {
+            ticks: 8,
+            tickColor: "rgba(51, 51, 51, 0.06)",
+          },
+          tooltip: false
+        }
+
 
     var markers;
     $.ajax({

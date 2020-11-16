@@ -36,7 +36,7 @@
                     <tr>
                         <th style="width: 30px;">CTRLNo.</th>
                         <th>Description</th>
-                        <th>Date Reported</th>
+                        <th>DATE OF INTAKE</th>
                         <th>Duration</th>
                         <th>Source</th>
                         <th>EODB</th>
@@ -266,8 +266,8 @@
                               <strong>Category: </strong> <span id="gi_gcategory"></span><br>
                               <strong>Type: </strong> <span id="gi_gtype"></span><br>
                               <strong>EODB: </strong> <span id="gi_eodb"></span><br>
-                              <strong>Date Reported: </strong> <span id="gi_date_reported"></span><br>
-                              <strong>Source: </strong> <span id="gi_gsource"></span><br>
+                              <strong>DATE OF INTAKE: </strong> <span id="gi_date_reported"></span><br>
+                              <strong>MODE OF FILING: </strong> <span id="gi_gsource"></span><br>
                               <strong>Assessed by: </strong> <span id="gi_assessedby"></span><br>
                            </address>
                         </div>
@@ -419,7 +419,7 @@
                             <a class="nav-link" id="profile-tab" data-toggle="tab" href="#attachments" role="tab" aria-controls="profile" aria-selected="false">ATTACHMENTS</a>
                           </li>
                           <li class="nav-item">
-                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">RESOLUTION INFORMATION</a>
+                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">ACTION & RESLUTION</a>
                           </li>
                         </ul>
                         <div class="tab-content" id="myTabContent">
@@ -535,87 +535,8 @@
 
                             <div class="form-group">
                                 <label for="txtIntervDescription" class="control-label">Grievance Details <font color="red">*</font></label>
+                                <textarea class="form-control" name="hid_description" id="hid_description"></textarea>
 
-                                <!-- editor-one wrapper -->
-                                <div class="x_content">
-                                  <div id="alerts"></div>
-                                  <div class="btn-toolbar editor" data-role="editor-toolbar" data-target="#editor-one">
-<!--                                     <div class="btn-group">
-                                      <a class="btn dropdown-toggle" data-toggle="dropdown" title="Font"><i class="fa fa-font"></i><b class="caret"></b></a>
-                                      <ul class="dropdown-menu">
-                                            <li></li>
-                                      </ul>
-                                    </div> -->
-
-                                    <div class="btn-group">
-                                      <a class="btn dropdown-toggle" data-toggle="dropdown" title="Font Size"><i class="fa fa-text-height"></i>&nbsp;<b class="caret"></b></a>
-                                      <ul class="dropdown-menu">
-                                        <li>
-                                          <a data-edit="fontSize 5">
-                                            <p style="font-size:17px">Huge</p>
-                                          </a>
-                                        </li>
-                                        <li>
-                                          <a data-edit="fontSize 3">
-                                            <p style="font-size:14px">Normal</p>
-                                          </a>
-                                        </li>
-                                        <li>
-                                          <a data-edit="fontSize 1">
-                                            <p style="font-size:11px">Small</p>
-                                          </a>
-                                        </li>
-                                      </ul>
-                                    </div>
-
-                                    <div class="btn-group">
-                                      <a class="btn" data-edit="bold" title="Bold (Ctrl/Cmd+B)"><i class="fa fa-bold"></i></a>
-                                      <a class="btn" data-edit="italic" title="Italic (Ctrl/Cmd+I)"><i class="fa fa-italic"></i></a>
-                                      <a class="btn" data-edit="strikethrough" title="Strikethrough"><i class="fa fa-strikethrough"></i></a>
-                                      <a class="btn" data-edit="underline" title="Underline (Ctrl/Cmd+U)"><i class="fa fa-underline"></i></a>
-                                    </div>
-
-                                    <div class="btn-group">
-                                      <a class="btn" data-edit="insertunorderedlist" title="Bullet list"><i class="fa fa-list-ul"></i></a>
-                                      <a class="btn" data-edit="insertorderedlist" title="Number list"><i class="fa fa-list-ol"></i></a>
-                                      <a class="btn" data-edit="outdent" title="Reduce indent (Shift+Tab)"><i class="fa fa-dedent"></i></a>
-                                      <a class="btn" data-edit="indent" title="Indent (Tab)"><i class="fa fa-indent"></i></a>
-                                    </div>
-
-                                    <div class="btn-group">
-                                      <a class="btn" data-edit="justifyleft" title="Align Left (Ctrl/Cmd+L)"><i class="fa fa-align-left"></i></a>
-                                      <a class="btn" data-edit="justifycenter" title="Center (Ctrl/Cmd+E)"><i class="fa fa-align-center"></i></a>
-                                      <a class="btn" data-edit="justifyright" title="Align Right (Ctrl/Cmd+R)"><i class="fa fa-align-right"></i></a>
-                                      <a class="btn" data-edit="justifyfull" title="Justify (Ctrl/Cmd+J)"><i class="fa fa-align-justify"></i></a>
-                                    </div>
-
-                                    <div class="btn-group">
-                                      <a class="btn dropdown-toggle" data-toggle="dropdown" title="Hyperlink"><i class="fa fa-link"></i></a>
-                                      <div class="dropdown-menu input-append">
-                                        <input class="span2" placeholder="URL" type="text" data-edit="createLink" />
-                                        <button class="btn" type="button">Add</button>
-                                      </div>
-                                      <a class="btn" data-edit="unlink" title="Remove Hyperlink"><i class="fa fa-cut"></i></a>
-                                    </div>
-
-                                    <div class="btn-group">
-                                      <a class="btn" title="Insert picture (or just drag & drop)" id="pictureBtn"><i class="fa fa-picture-o"></i></a>
-                                      <input type="file" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage" />
-                                    </div>
-
-                                    <div class="btn-group">
-                                      <a class="btn" data-edit="undo" title="Undo (Ctrl/Cmd+Z)"><i class="fa fa-undo"></i></a>
-                                      <a class="btn" data-edit="redo" title="Redo (Ctrl/Cmd+Y)"><i class="fa fa-repeat"></i></a>
-                                    </div>
-                                  </div>
-                                  <div id="editor-one" name="editor-one" class="editor-wrapper"></div>
-                                  <textarea name="descr" id="descr" style="display:none;">sample</textarea>
-                                  <input type="hidden" name="hid_description" id="hid_description">
-                                  
-                                  <br />
-                                  <div class="ln_solid"></div>
-                                </div>
-                             <!-- /editor-one wrapper -->
                             </div>
 
                             <div class="form-group">
@@ -627,7 +548,7 @@
 
 
                             <div class="form-group">
-                                <label for="dtDateReported" class="control-label">Date Reported <font color="red">*</font></label>
+                                <label for="dtDateReported" class="control-label">DATE OF INTAKE <font color="red">*</font></label>
                                 <div class="input-group">
                                     <div class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
@@ -637,7 +558,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="cmbEdSource" class="control-label">SOURCE OF GRIEVANCE <font color="red">*</font></label>
+                                <label for="cmbEdSource" class="control-label">MODE OF FILING <font color="red">*</font></label>
                                 <select id="cmbEdSource" name="cmbEdSource" class="select form-control" required="required">
                                     <option value="-1">Select</option>
                                 </select>
@@ -714,9 +635,51 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="txtEdRemarks" class="control-label">Remarks</label>
-                                <textarea id=txtEdRemarks name=txtEdRemarks class="form-control"></textarea>
+                                <label for="txtResponseProvided" class="control-label">Response provided</label>
+                                <textarea id=txtResponseProvided name=txtResponseProvided class="form-control"></textarea>
                             </div>
+
+
+                            <div class="form-group">
+                                <label for="txtEdActionTaken" class="control-label">Action Taken</label>
+                                <textarea id=txtEdActionTaken name=txtEdActionTaken class="form-control"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="dtDateActioned" class="control-label">Date of action taken </label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input id="dtDateActioned" name="dtDateActioned" type="date" class="form-control" >
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="dtDateFeedback" class="control-label">Date of feedback to complainant</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input id="dtDateFeedback" name="dtDateFeedback" type="date" class="form-control" >
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="dtDateResolution" class="control-label">Date of Resolution</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input id="dtDateResolution" name="dtDateResolution" type="date" class="form-control" >
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="txtEdResDescription" class="control-label">Description of Resolution</label>
+                                <textarea id=txtEdResDescription name=txtEdResDescription class="form-control"></textarea>
+                            </div>
+
+
+                            
                           </div>
 
                         </div>
@@ -797,7 +760,10 @@
         e.preventDefault();
 
         if (confirm('You are about to save the changes you made. Do you want to continue?')) {
-            $('#hid_description').val($('#editor-one').html());
+            //$('#descr').html($('#editor-one').html());
+            //$('#hid_description').val($('#editor-one').html());
+            //console.log($('#descr').html());
+          //  alert($('#descr').html());    
                 $.ajax({
                     type: 'POST',
                     url: 'proc/grievance_save.php',
@@ -808,13 +774,14 @@
                     cache: false,
                     enctype: 'multipart/form-data',
                     success: function(response) {
-                        // console.log(response);
+                         console.log(response);
                          if (response.indexOf("**success**") > -1){   
                                 notification_show("Saved",1);
                                 $('#btnSubmitGrievamce').attr('disabled',true);
                          }else if (response.indexOf("**no-changes**") > -1) {
                                  notification_show("No changes made!",0);
                          }
+                        //$('#interv_list_editor_modal').modal('hide');
                     }
                 });
         }
@@ -861,22 +828,16 @@
             $('#editors-notification').removeAttr('hidden');
             $('#editors-notification-container').html(msg);
         }
-
-
     }
 
     //open grievance editor
     $(document).on('click', "#btn_interv_list_editor_open", function(e) {
         e.preventDefault();
 
-
         var psgc = $(this).attr('psgc');
         var guid = $(this).attr('guid'); 
         var ctrlno = $(this).attr('ctrlno'); 
         var docid = $(this).attr('docid'); 
-
-       
-
 
          $('#btnSubmitGrievamce').attr('disabled',false);
          $('#editors-notification').attr('hidden',true);
@@ -987,6 +948,14 @@
 
                              29  grs_subtype_id
                              30  subtype
+                             31  modified_by
+
+                              $act_taken       = $r['act_taken'];         //32
+                              $act_date        = $r['act_date'];          //33
+                              $res_date        = $r['res_date'];          //34
+                              $res_description = $r['res_description'];   //35
+                              $fed_date        = $r['fed_date'];          //36
+
                     */
 
                     //COMPLIANT INFORMATION
@@ -1004,6 +973,14 @@
                     $('#hid_date_encoded').val(arr[21]);
                     $('#hid_encoded_by').val(arr[20]);
 
+                    $('#txtResponseProvided').html(arr[22]);
+                    
+                    $('#txtEdActionTaken').html(arr[32]);
+                    $('#dtDateActioned').val(arr[33]);
+                    $('#dtDateResolution').val(arr[34]);
+                    $('#txtEdResDescription').html(arr[35]);
+                    $('#dtDateFeedback').val(arr[36]);
+
                     $('#files').val('');
                     //GRIEVANCE INFORMATION
                     
@@ -1018,7 +995,6 @@
                             selected: arr[24],
                         },
                         success: function(response) {
-
                             $('#cmbEdGRSCategory').html(response);
                         }
                     });
@@ -1030,19 +1006,17 @@
                             tableName: "lib_grssubtype",
                             valueMember: "id",
                             displayMember: "`subtype`",
-                            condition: "`type`="+ arr[24] +" ORDER BY subtype",
+                            condition: "",
                             selected: arr[29],
                         },
                         success: function(response) {
-
+                         // console.log(response);
                             $('#cmbEdGRSSubtype').html(response);
                         }
                     });
 
 
-                    $('#editor-one').html(arr[13]);
-          
-
+                    $('#hid_description').html(arr[13]);
       
                     $.ajax({
                         type: 'GET',
@@ -1114,7 +1088,6 @@
                         }
                     });
 
-                    $('#txtEdRemarks').html(arr[22]);
 
                 }
             });
@@ -1162,6 +1135,23 @@
             $('#files').val('');
             //TAB 2
 
+            
+            $.ajax({
+                type: 'GET',
+                url: './proc/getComboData.php',
+                data: {
+                    tableName: "lib_grssubtype",
+                    valueMember: "id",
+                    displayMember: "`subtype`",
+                    condition: "",
+                    selected: '',
+                },
+                success: function(response) {
+                 // console.log(response);
+                    $('#cmbEdGRSSubtype').html(response);
+                }
+            });
+
             $.ajax({
                 type: 'GET',
                 url: './proc/getComboData.php',
@@ -1178,7 +1168,7 @@
                 }
             });
 
-            $('#editor-one').html('');
+            $('#hid_description').val('');
             
             $.ajax({
                 type: 'GET',
@@ -1234,9 +1224,13 @@
                 }
             });
 
-            $('#txtEdRemarks').html('');
-
-
+            $('#txtResponseProvided').html('');
+            
+            $('#txtEdActionTaken').html('');
+            $('#dtDateActioned').val('');
+            $('#dtDateResolution').val('');
+            $('#txtEdResDescription').html('');
+            $('#dtDateFeedback').val('');
 
         }
 
@@ -1269,7 +1263,6 @@
                     $('#cmbEdGRSSubtype').html(response);
                 }
             });
-
     });
 
     //on change #cmbEdProvince
@@ -1332,7 +1325,7 @@
             $('.view_editor_button').attr('ctrlno',ctrlno);
             $('.view_editor_button').attr('docid',docid);
 
-            //***
+
 
             $.ajax({
                 type: 'GET',
@@ -1381,6 +1374,11 @@
                              30  subtype
                              31  modified by
 
+                              $act_taken       = $r['act_taken'];         //32
+                              $act_date        = $r['act_date'];          //33
+                              $res_date        = $r['res_date'];          //34
+                              $res_description = $r['res_description'];   //35
+                              $fed_date        = $r['fed_date'];          //36
 
                     */
 
@@ -1411,25 +1409,32 @@
                     $('#gi_remarks').html(arr[22]);
 
 
-
                       var today = new Date();
+
+                     if (arr[27] == 3){ //if grs is resolved
+                        today = new Date(arr[34]);
+                     }
+
+
+
                       var comdate = new Date(arr[15]);
                       var diffMs = (today-comdate); // milliseconds between now & Christmas
                       var diffDays = Math.floor(diffMs / 86400000); // days
-                      var diffMonths = Math.floor(diffMs / 8.64e+8); // days
+                      var diffMonths = Math.floor(diffMs / 2.628e+9); // days
                       var diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
                       var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
 
                       var duration = "";
                       if (diffMonths>0) {
-                          duration = diffMonths + " Months ago";
+                          duration = diffMonths + " Months";
                       }else if (diffDays>0){
-                          duration = diffDays + " days ago";
+                          duration = diffDays + " days";
                       }else if (diffHrs>0){
-                          duration = diffHrs + " hours ago";
+                          duration = diffHrs + " hours";
                       }else if (diffMins>0){
-                          duration = diffHrs + " minutes ago";
+                          duration = diffHrs + " minutes";
                       }
+                       console.log(diffMonths);
 
                     $('#gs_duration').html(duration);
                     $('#gs_modified_by').html(arr[31]);
