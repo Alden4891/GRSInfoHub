@@ -27,10 +27,7 @@ while($row = mysqli_fetch_array($result)){
     $P_YEAR = $row['P_YEAR'];
     $P_MONTH = $row['P_MONTH'];
     $GRVCOUNT = $row['GRVCOUNT'];
-
     $return_arr[] = array($P_YEAR,$P_MONTH,$GRVCOUNT);
-
-
 }
 
 echo json_encode($return_arr);

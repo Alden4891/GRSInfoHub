@@ -797,10 +797,7 @@
         e.preventDefault();
 
         if (confirm('You are about to save the changes you made. Do you want to continue?')) {
-            //$('#descr').html($('#editor-one').html());
             $('#hid_description').val($('#editor-one').html());
-            //console.log($('#descr').html());
-          //  alert($('#descr').html());    
                 $.ajax({
                     type: 'POST',
                     url: 'proc/grievance_save.php',
@@ -818,7 +815,6 @@
                          }else if (response.indexOf("**no-changes**") > -1) {
                                  notification_show("No changes made!",0);
                          }
-                        //$('#interv_list_editor_modal').modal('hide');
                     }
                 });
         }
