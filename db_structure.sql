@@ -1,6 +1,6 @@
 /*
 SQLyog Ultimate v8.71 
-MySQL - 5.5.5-10.4.8-MariaDB : Database - db_sapgrs
+MySQL - 5.5.5-10.4.14-MariaDB : Database - db_grs
 *********************************************************************
 */
 
@@ -12,9 +12,9 @@ MySQL - 5.5.5-10.4.8-MariaDB : Database - db_sapgrs
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`db_sapgrs` /*!40100 DEFAULT CHARACTER SET ascii COLLATE ascii_bin */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`db_grs` /*!40100 DEFAULT CHARACTER SET ascii COLLATE ascii_bin */;
 
-USE `db_sapgrs`;
+USE `db_grs`;
 
 /*Table structure for table `attachments` */
 
@@ -29,7 +29,7 @@ CREATE TABLE `attachments` (
   `uid` varchar(50) COLLATE ascii_bin DEFAULT NULL,
   `guid` varchar(50) COLLATE ascii_bin DEFAULT NULL COMMENT 'Grievance uid',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=ascii COLLATE=ascii_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
 
 /*Table structure for table `grantees` */
 
@@ -77,7 +77,7 @@ CREATE TABLE `grievances` (
   `res_description` text COLLATE ascii_bin DEFAULT NULL,
   `fed_date` date DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=ascii COLLATE=ascii_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
 
 /*Table structure for table `images` */
 
@@ -116,9 +116,11 @@ DROP TABLE IF EXISTS `lib_grssubtype`;
 
 CREATE TABLE `lib_grssubtype` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` int(11) DEFAULT NULL,
   `subtype` varchar(100) COLLATE ascii_bin DEFAULT NULL,
+  `withrem` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=ascii COLLATE=ascii_bin;
 
 /*Table structure for table `lib_grstype` */
 
