@@ -27,7 +27,7 @@ if ($optionBarangay != -1) {
 
 if ($optionReportType == 'grs_r1')       include 'grs_r1.php';
 if ($optionReportType == 'grs_r2')       include 'grs_r2.php';
-if ($optionReportType == 'grs_r3') 		 include 'grs_r3.php';
+if ($optionReportType == 'grs_r3') 		 	 include 'grs_r3.php';
 
 
 ?>
