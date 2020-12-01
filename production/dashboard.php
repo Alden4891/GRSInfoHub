@@ -3,7 +3,7 @@
           <div class="row" style="display: inline-block;" >
           <div class="tile_count">
 
-                    <?php 
+                    <?php
 
 
 
@@ -18,9 +18,9 @@
                               , COUNT(`grievances`.`id`) AS `value`
                           FROM
                               `db_grs`.`grievances`
-                              INNER JOIN `db_grs`.`lib_grssubtype` 
+                              INNER JOIN `db_grs`.`lib_grssubtype`
                                   ON (`grievances`.`GRS_TYPE` = `lib_grssubtype`.`id`)
-                          GROUP BY `lib_grssubtype`.`id`, `grs_type`;                    
+                          GROUP BY `lib_grssubtype`.`id`, `grs_type`;
 
                              ") or die(mysqli_error());
                             while ($r=mysqli_fetch_array($res_grivwidget,MYSQLI_ASSOC)) {
@@ -28,11 +28,11 @@
                                 $grs_type=$r['grs_type'];
                                 $grs_value=$r['value'];
 
-                                
 
 
-                                $grs_type = ($grs_type=='total_griev'?'Total Grievances':$grs_type); 
-                                
+
+                                $grs_type = ($grs_type=='total_griev'?'Total Grievances':$grs_type);
+
                                 if ($grs_type=='total_griev'){
                                     $grs_type = 'Total Grievances';
 
@@ -53,20 +53,11 @@
                                     ";
 
                                 }
-
-
-
                             }
                             mysqli_free_result($res_grivwidget);
 
                         ?>
-
-
           </div>
- 
-
-
-
         </div>
           <!-- /top tiles -->
 
@@ -114,9 +105,6 @@
                         </div>
                       </div>
                     </div>
-
-
-
                   </div>
                   <div class="col-md-12 col-sm-12 ">
                     <div>
@@ -168,29 +156,29 @@
                   </div>
                 </div>
               </div>
-            </div>            
+            </div>
 
           </div>
 
 
           <div class="row">
-            
 
 
-            
+
+
           </div>
-        
+
 
 <script type="text/javascript">
-  
+
   jQuery(document).ready(function() {
-    init_flot_chart();  
+    init_flot_chart();
     init_db_widgets();
     init_db_componentprogress();
     init_recentInterventions();
 
   });
-  
+
 
   function init_recentInterventions() {
     // getDBRecentIntrvData.php
@@ -205,11 +193,11 @@
         success: function(response) {
             var arr_data1 = [];
             var jsondata = JSON.parse(JSON.stringify(response));
-           
+
             var str = "";
 
             for (var i=0;i<jsondata.length; i++) {
-               
+
               var subject = '';
               var id = jsondata[i][0];
               var description   = jsondata[i][1];
@@ -252,17 +240,17 @@
               str += "      <p class=\"excerpt\">"+description.substring(0, 300);+"";
               str += "    ...<a href=\"#\" data-toggle=\"modal\" data-target=\"#previewGrievModal\" id=\"viewGriev\" guid=\""+guid+"\" ctrlno=\""+id+"\">read&nbsp;more</a></p></div>";
               str += "  </div>";
-              str += "</li>";                
+              str += "</li>";
 
             }
-            
-              $('#recent_activities_container').html(str);       
+
+              $('#recent_activities_container').html(str);
 
         }
     });
   }
 
-  
+
   function init_db_componentprogress() {
     $.ajax({
         type: 'get',
@@ -287,7 +275,7 @@
              }
              // if ($("#chart_plot_01").length){
              //      $.plot( $("#chart_plot_01"), [ arr_data1 ],  chart_plot_01_settings );
-             // } 
+             // }
         }
     });
   }
@@ -325,19 +313,19 @@
                 if (id == 8) $('#dbw_dti').html(value+'&nbsp;&nbsp;');
                 if (id == 9) $('#dbw_da').html(value+'&nbsp;&nbsp;');
                 if (id ==10) $('#dbw_lgu').html(value+'&nbsp;&nbsp;');
-                
+
              }
              // if ($("#chart_plot_01").length){
              //      $.plot( $("#chart_plot_01"), [ arr_data1 ],  chart_plot_01_settings );
-             // } 
-            
+             // }
+
         }
     });
   }
   function init_flot_chart(){
-    
+
     if( typeof ($.plot) === 'undefined'){ return; }
-    
+
   // $('#reportrange').daterangepicker({
   //     "showDropdowns": true,
   //     "startDate": "04/03/2020",
@@ -351,18 +339,19 @@
 
     var chart_plot_01_settings = {
           series: {
-            lines: {
-              show: false,
-              fill: true
+            curvedLines: {
+              apply: true,
+              active: true,
+              monotonicFit: true
             },
             splines: {
               show: true,
               tension: 0.4,
-              lineWidth: 5,
+              lineWidth: 1,
               fill: 0.1
             },
             points: {
-              radius: 4,
+              radius: 1,
               show: true
             },
             shadowSize: 2
@@ -379,7 +368,7 @@
           xaxis: {
             tickColor: "rgba(51, 51, 51, 0.06)",
             mode: "time",
-            tickSize: [28, "day"],
+            tickSize: [30, "day"],
             //tickLength: 10,
             axisLabel: "Date",
             axisLabelUseCanvas: true,
@@ -391,9 +380,8 @@
             ticks: 8,
             tickColor: "rgba(51, 51, 51, 0.06)",
           },
-          tooltip: false
+          tooltip: true
         }
-
 
     var markers;
     $.ajax({
@@ -420,8 +408,8 @@
 
              if ($("#chart_plot_01").length){
                   $.plot( $("#chart_plot_01"), [ arr_data1,arr_data2 ],  chart_plot_01_settings );
-             } 
-            
+             }
+
         }
     });
 
@@ -432,7 +420,7 @@
 
 
             console.log("Apply event fired, start/end dates are " + fromDate + " to " + toDate);
-            
+
             //line graph
             $.ajax({
                 type: 'get',
@@ -458,8 +446,8 @@
 
                      if ($("#chart_plot_01").length){
                   $.plot( $("#chart_plot_01"), [ arr_data1,arr_data2 ],  chart_plot_01_settings );
-                     } 
-                    
+                     }
+
                 }
             });
 
@@ -468,12 +456,10 @@
       });
 
 
-  } 
+  }
 
   //randomize 1 to 100
   function rv(){
     return Math.floor((Math.random() * 100) + 1);
   }
 </script>
-
-
