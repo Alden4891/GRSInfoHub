@@ -1,6 +1,6 @@
 .
 <div class="row">
-
+              
 
               <div class="col-md-12 ">
                 <div class="x_panel">
@@ -63,11 +63,10 @@
                           <select class="select2_group form-control" id=optionReportType name="optionReportType">
                             <optgroup label="Masterlists">
                               <option value="grs_r1">Grievance redress system monitoring report</option>
-                            </optgroup>
-                            <optgroup label="Summary">
                               <option value="grs_r2">Summary of Greivances by Status</option>
-                              <option value="grs_r3">Summary of Greivances by Classification</option>
                             </optgroup>
+
+
                           </select>
                         </div>
                       </div>
@@ -82,13 +81,18 @@
                   </div>
                 </div>
               </div>
+
+
+              
             </div>
+
+
 
 <script>
 $(document).ready(function(e) {
     //load region filter
     //SELECT DISTINCT  region AS 'valuemember',region AS 'displaymember' FROM roster
-
+ 
       $.ajax({
       type: 'GET',
       url: './proc/getComboData.php',
@@ -103,9 +107,9 @@ $(document).ready(function(e) {
           $('#optionRegion').html(response);
       }
     });
-});
+});    
 
-    //on #optionRegion changed
+    //on #optionRegion changed 
     $(document).on('change', "#optionRegion", function(e) {
         e.preventDefault();
         var value = $(this).children("option:selected").val()
@@ -123,13 +127,13 @@ $(document).ready(function(e) {
                 condition: "region = '" + value + "'",
             },
             success: function(response) {
-
+        
                 $('#optionProvince').html(response);
             }
         });
     });
 
-    //on #optionProvince changed
+    //on #optionProvince changed 
     $(document).on('change', "#optionProvince", function(e) {
         e.preventDefault();
         var value = $(this).children("option:selected").val()
@@ -145,13 +149,13 @@ $(document).ready(function(e) {
                 condition: "PROVINCE = '" + value + "'",
             },
             success: function(response) {
-
+              
                 $('#optionMunicipality').html(response);
             }
         });
     });
 
-    //on #optionMunicipality changed
+    //on #optionMunicipality changed 
     $(document).on('change', "#optionMunicipality", function(e) {
         e.preventDefault();
         var value = $(this).children("option:selected").val()
@@ -171,5 +175,5 @@ $(document).ready(function(e) {
                 $('#optionBarangay').html(response);
             }
         });
-    });
+    });    
 </script>

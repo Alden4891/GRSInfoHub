@@ -62,9 +62,12 @@ GROUP BY r.REGION, r.MUNICIPALITY, `lib_status`.`status`
 ) r
 WHERE $filter
 GROUP BY REGION,PROVINCE,MUNICIPALITY;
+
+
 ";
 
 include '../dbconnect.php';
+
 
 // prepare data to display
 $res_data = mysqli_query($con,$sql) or die(mysqli_error());

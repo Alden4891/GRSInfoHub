@@ -34,24 +34,23 @@ SELECT
     , `grievances`.`DESCRIPTION`
     , `grievances`.`Remarks` AS `response_provided`
     , `grievances`.`act_taken` AS `action_taken`
-    , CASE WHEN `grievances`.`act_date` = '0000-00-00' THEN '' ELSE `grievances`.`act_date` END `action_date`
-    , CASE WHEN `grievances`.`fed_date` = '0000-00-00' THEN '' ELSE `grievances`.`fed_date` END `feedback_date`
+    , `grievances`.`act_date` AS `action_date`
+    , `grievances`.`fed_date` AS `feedback_date`
     , `lib_status`.`status`
-    , CASE WHEN `grievances`.`res_date` = '0000-00-00' THEN '' ELSE `grievances`.`res_date` END `res_date`
+    , `grievances`.`res_date`
     , `grievances`.`res_description`
 FROM
     `db_grs`.`lib_psgc`  r
-    INNER JOIN `db_grs`.`grievances`
+    INNER JOIN `db_grs`.`grievances` 
         ON (`r`.`PSGC` = `grievances`.`PSGC`)
-    INNER JOIN `db_grs`.`lib_grssource`
+    INNER JOIN `db_grs`.`lib_grssource` 
         ON (`grievances`.`GRS_SOURCE` = `lib_grssource`.`id`)
     INNER JOIN `db_grs`.`lib_grstype` AS `grs_cat`
         ON (`grievances`.`GRS_CAT` = `grs_cat`.`id`)
     INNER JOIN `db_grs`.`lib_grssubtype` AS `sap_compo`
         ON (`grievances`.`GRS_TYPE` = `sap_compo`.`id`)
-    INNER JOIN `db_grs`.`lib_status`
+    INNER JOIN `db_grs`.`lib_status` 
         ON (`grievances`.`STATUS` = `lib_status`.`id`)
-
 WHERE $filter;
 ";
 
@@ -61,7 +60,7 @@ include '../dbconnect.php';
 // prepare data to display
 $res_data = mysqli_query($con,$sql) or die(mysqli_error());
 $data = mysqli_fetch_all($res_data, MYSQLI_ASSOC);
-
+    
 include '../dbclose.php';
 
 // -----------------
