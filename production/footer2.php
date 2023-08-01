@@ -110,7 +110,7 @@ footer .footer-right a{
 				<br>
 				Department of Social Welfare and Development
 
-				<p>OFFLINE-GRS © 2020</p>
+				<p>GRS Info Hub © 2023</p>
 			</div>
 
 		</div>

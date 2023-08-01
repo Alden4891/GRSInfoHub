@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>DSWD XII - OFFLINE-GRS v0.1! | </title>
+    <title>DSWD XII - GRS v0.1! | </title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -112,7 +112,7 @@
                 <br />
 
                 <div>
-                  <h1><img src="./images/dswd-logo-gray.svg" style="width: 40px;fill:#ffffff;"> DSWD XII OFFLINE-GRS v0.1!</h1>
+                  <h1><img src="./images/dswd-logo-gray.svg" style="width: 40px;fill:#ffffff;"> DSWD XII GRS-IS v0.1!</h1>
                   <p>DSWD XII © 2020 All Rights Reserved.</p>
                 </div>
                               <div id=rmessagebox></div>
@@ -185,7 +185,7 @@
                 <br />
 
                 <div>
-                  <h1><img src="./images/dswd-logo-gray.svg" style="width: 40px;fill:#ffffff;"> DSWDI OFFLINE-GRS v0.1!</h1>
+                  <h1><img src="./images/dswd-logo-gray.svg" style="width: 40px;fill:#ffffff;"> DSWDI GRS v0.1!</h1>
                   <p>DSWD XII © 2020 All Rights Reserved.</p>
 
                 </div>

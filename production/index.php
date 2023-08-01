@@ -48,7 +48,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" href="images/favicon.ico" type="image/ico" />
 
-    <title>DSWD XII | OFFLINE-GRS System</title>
+    <title>DSWD XII | GRS Info Hub v0.1</title>
 
     <!-- <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script> -->
     <script type="text/javascript" src="../vendors/jquery/dist/jquery.min.js"></script>
@@ -99,7 +99,7 @@
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="index.html" class="site_title"> <img src="./images/dswd-logo.svg" style="width: 40px;"> <span>OFFLINE-GRS V0.1</span></a>
+              <a href="index.html" class="site_title"> <img src="./images/dswd-logo.svg" style="width: 40px;"> <span>GRS Info Hub V0.1</span></a>
             </div>
 
             <div class="clearfix"></div>
@@ -243,7 +243,7 @@
               System Developer: <a href="mailto:aaquinones.fo12@dswd.gov.ph">Alden Quinones</a>
             </div>
             <div class="pull-right">
-              Offline GRS by <a href="http://fo12.dswd.gov.ph" target="_blank">DSWD XII</a>
+              GRS Info Hub by <a href="http://fo12.dswd.gov.ph" target="_blank">DSWD XII</a>
             </div>
             
           </div>
@@ -697,10 +697,9 @@ $('#uploadfile2').on("submit",function (e) {
             <div class="modal-body">
               <div class="row">
                <div class="col-md-12 col-sm-12 col-xs-12">
-                  <b>App Name:</b> OFFLINE-GRS System <br>
-                  <b>Version :</b> 2.0 <br><hr>
+                  <b>App Name:</b> GRS Info Hub <br>
+                  <b>Version :</b> 1.0 <br><hr>
                   <b>System Developer :</b> Alden A. Quinones | <a href="mailto:alden.roxy@gmail.com">alden.roxy@gmail.com</a><br>
-                  <b>UX/UI Designer  :</b> Roxanne Eve G. Quinones  | <a href="mailto:roxy.guibone@gmail.com">roxy.guibone@gmail.com</a><br>
 
                </div>
               </div>            
